@@ -1,0 +1,30 @@
+html {
+    font-size: 14px;
+    font-family: "Inter";
+}
+
+*,
+*::after,
+*::before {
+    font-family: inherit;
+    box-sizing: border-box;
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+button {
+    background: none;
+}
+
+a {
+    color: inherit;
+}
+
+img {
+    display: block;
+}
+
+body {
+    min-height: 100vh;
+}
