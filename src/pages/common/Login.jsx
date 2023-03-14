@@ -1,8 +1,8 @@
 import { useState } from 'react';
 // import { useHistory } from 'react-router-dom';
-import { Form, Button, Alert } from 'react-bootstrap';
+import { Form as BootForm, Button, Alert, Stack, Container, Row, Col } from 'react-bootstrap';
 
-export const Login = () => {
+const Form = () => {
 	const [email, setEmail] = useState('');
 	const [otp, setOTP] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
@@ -31,35 +31,53 @@ export const Login = () => {
 		}
 	};
 
-	return (
-		<div className="container mt-4">
-			<h1>Login</h1>
-			{errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-			<Form onSubmit={handleLogin}>
-				<Form.Group controlId="email">
-					<Form.Label>Email</Form.Label>
-					<Form.Control
-						type="email"
-						value={email}
-						onChange={(event) => setEmail(event.target.value)}
-						required
-					/>
-				</Form.Group>
 
-				<Form.Group controlId="otp">
-					<Form.Label>One-time Password</Form.Label>
-					<Form.Control
+	return (
+		<BootForm onSubmit={handleLogin}>
+			{errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
+			<Stack gap={4}>
+				<BootForm.Group controlId="email">
+					<Stack gap={2}>
+						<BootForm.Label>Email</BootForm.Label>
+						<BootForm.Control
+							type="email"
+							value={email}
+							onChange={(event) => setEmail(event.target.value)}
+							required
+						/>
+						<Button variant="secondary">Отправить одноразовый пароль</Button>
+					</Stack>
+				</BootForm.Group>
+
+				<BootForm.Group controlId="otp">
+					<BootForm.Label>Одноразовый пароль из письма</BootForm.Label>
+					<BootForm.Control
 						type="password"
 						value={otp}
 						onChange={(event) => setOTP(event.target.value)}
 						required
 					/>
-				</Form.Group>
+				</BootForm.Group>
 
 				<Button variant="primary" type="submit">
-					Login
+					Войти
 				</Button>
-			</Form>
-		</div>
+			</Stack>
+		</BootForm>
+	)
+}
+
+export const Login = () => {
+	return (
+		<Container>
+			<Row>
+				<h1>Вход</h1>
+			</Row>
+			<Row>
+				<Col >
+					<Form />
+				</Col>
+			</Row>
+		</Container>
 	);
 }

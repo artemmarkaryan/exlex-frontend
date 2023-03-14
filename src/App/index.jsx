@@ -6,11 +6,11 @@ import { Landing } from '@/pages/common/Landing';
 export const App = () => {
     return (
         <Router>
+            <Navigation />
             <Routes>
                 <Route path="/" element={<Landing />} />
                 <Route path="/login" element={<Login />} />
             </Routes>
-            <Navigation />
         </Router>
     );
-};
+}
