@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { Navigation } from '@/components/Navbar'
-import { Login } from '@/pages/common/Login'
-import { Landing } from '@/pages/common/Landing';
+import { Login } from '@/pages/Login'
+import { Landing } from '@/pages/Landing';
 
 export const App = () => {
     return (

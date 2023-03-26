@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
     "build": "vite build",
-    "lint:eslint": "eslint"
+    "lint:eslint": "eslint",
+    "lint:ts": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,7 @@
   },
   "homepage": "https://github.com/artemmarkaryan/exlex-frontend#readme",
   "devDependencies": {
+    "@types/react-dom": "^18.0.11",
     "@typescript-eslint/parser": "^5.54.1",
     "@wgwergwegwer/configs": "^1.0.3",
     "eslint-plugin-jsx-a11y": "^6.7.1",
@@ -28,18 +30,23 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.8.4",
     "sass": "^1.59.2",
+    "stylelint": "^15.3.0",
     "typescript": "^4.9.5",
     "vite": "^4.1.4"
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@vitejs/plugin-react": "^3.1.0",
     "bootstrap": "^5.2.3",
     "eslint": "^8.12.0",
     "eslint-config-prettier": "^8.5.0",
+    "jotai": "^2.0.3",
     "react": "^18.2.0",
     "react-bootstrap": "^2.7.2",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.43.7",
+    "react-query": "^3.39.3",
     "react-router-dom": "^6.9.0"
   }
 }

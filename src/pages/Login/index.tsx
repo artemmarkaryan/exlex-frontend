@@ -1,26 +1,34 @@
 import { useState } from 'react';
-// import { useHistory } from 'react-router-dom';
-import { Form as BootForm, Button, Alert, Stack, Container, Row, Col } from 'react-bootstrap';
+import {useNavigate} from 'react-router'
+
+import {
+	Form as BootForm,
+	Button,
+	Alert,
+	Stack,
+	Container,
+	Row,
+	Col,
+} from 'react-bootstrap';
 
 const Form = () => {
 	const [email, setEmail] = useState('');
 	const [otp, setOTP] = useState('');
 	const [errorMessage, setErrorMessage] = useState('');
-	// const history = useHistory();
+	const navigate = useNavigate();
 
 	const handleLogin = async (event) => {
 		event.preventDefault();
 
 		try {
-
 			// mock
 			const response = {
-				ok: true
-			}
+				ok: true,
+			};
 
 			if (response.ok) {
 				// Redirect to dashboard after successful login
-				history.push('/dashboard');
+				navigate('/dashboard');
 			} else {
 				// Display error message if login fails
 				setErrorMessage('Invalid email or one-time password');
@@ -30,7 +38,6 @@ const Form = () => {
 			setErrorMessage('An error occurred. Please try again later.');
 		}
 	};
-
 
 	return (
 		<BootForm onSubmit={handleLogin}>
@@ -45,12 +52,16 @@ const Form = () => {
 							onChange={(event) => setEmail(event.target.value)}
 							required
 						/>
-						<Button variant="secondary">Отправить одноразовый пароль</Button>
+						<Button variant="secondary">
+                            Отправить одноразовый пароль
+						</Button>
 					</Stack>
 				</BootForm.Group>
 
 				<BootForm.Group controlId="otp">
-					<BootForm.Label>Одноразовый пароль из письма</BootForm.Label>
+					<BootForm.Label>
+                        Одноразовый пароль из письма
+					</BootForm.Label>
 					<BootForm.Control
 						type="password"
 						value={otp}
@@ -60,12 +71,12 @@ const Form = () => {
 				</BootForm.Group>
 
 				<Button variant="primary" type="submit">
-					Войти
+                    Войти
 				</Button>
 			</Stack>
 		</BootForm>
-	)
-}
+	);
+};
 
 export const Login = () => {
 	return (
@@ -74,10 +85,10 @@ export const Login = () => {
 				<h1>Вход</h1>
 			</Row>
 			<Row>
-				<Col >
+				<Col>
 					<Form />
 				</Col>
 			</Row>
 		</Container>
 	);
-}
+};
