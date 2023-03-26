@@ -1,7 +1,7 @@
 import React from 'react';
 import { Navbar, Nav, Container, Image } from 'react-bootstrap';
 import { AuthStates } from '@/dict/Dict'
-import logo from '@/public/logo.svg'
+import logo from '/logo.svg'
 
 
 const Brand = () => {
@@ -22,7 +22,6 @@ export const Navigation = (props: any) => {
             >
                 <Container>
                     <Brand/ >
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Nav className="ml-auto">
                         <Nav.Link href="/login">Вход</Nav.Link>
                         <Nav.Link href="/signup">Регистрация</Nav.Link>
