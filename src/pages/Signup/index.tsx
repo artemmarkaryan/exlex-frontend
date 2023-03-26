@@ -18,8 +18,8 @@ const SignupForm = () => {
 	const [otpSent, setOTPSent] = useState(false)
 	const [signup, { signupError }] = useMutation(SIGNUP_MUTATION);
 
-	const handleSendOTP = (e) => {
-		e.preventDefault();
+	const handleSendOTP = (event: any) => {
+		event.preventDefault();
 
 		signup({ variables: { email: email, role: userType, debug: isDebug } });
 		if (signupError) {
@@ -29,11 +29,11 @@ const SignupForm = () => {
 		}
 	};
 
-	const handleOptionChange = (event) => {
+	const handleOptionChange = (event: any) => {
 		setUserType(event.target.value);
 	};
 
-	const handleToken = (token) => {
+	const handleToken = (token: any) => {
 		alert(token)
 
 		// todo: store token
