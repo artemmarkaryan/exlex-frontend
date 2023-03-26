@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "outDir": "dist",
+        "paths": {
+            "@/*": ["*"]
+        },
+        "moduleResolution": "node",
+        "module": "ESNext",
+        "target": "ESNext",
+        "strict": true,
+        "strictNullChecks": true,
+        "noUnusedLocals": false,
+        "importHelpers": true,
+        "noUncheckedIndexedAccess": true,
+        "jsx": "react-jsx",
+        "isolatedModules": true,
+        "allowSyntheticDefaultImports": true,
+        "useDefineForClassFields": true,
+        "esModuleInterop": true
+    }
+}

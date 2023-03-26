@@ -1,3 +1,6 @@
 const config = require('@wgwergwegwer/configs/src/prettierrc');
 
-module.exports = config;
+module.exports = {
+    ...config,
+    editorconfig: true,
+};

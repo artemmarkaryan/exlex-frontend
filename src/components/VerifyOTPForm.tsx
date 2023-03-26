@@ -8,11 +8,11 @@ const VERIFY_OTP_MUTATION = gql`
   }
 `;
 
-export const VerifyOTPForm = (props) => {
+export const VerifyOTPForm = (props: any) => {
   const [otp, setOTP] = useState('');
   const [verifyOTP, { error: verifyOTPError }] = useMutation(VERIFY_OTP_MUTATION);
 
-  const handleVerifyOTP = async (e) => {
+  const handleVerifyOTP = async (e: any) => {
     e.preventDefault();
     try {
       const { data } = await verifyOTP({ variables: { email: props.email, otp: otp } });

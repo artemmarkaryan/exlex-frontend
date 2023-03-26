@@ -1,7 +1,9 @@
 import { useState } from 'react';
+
 import { Form, Button, Alert, Stack, Container, Row, Col } from 'react-bootstrap';
 import { useMutation, gql } from '@apollo/client';
-import { VerifyOTPForm } from '@/components/common/VerifyOTPForm';
+import { VerifyOTPForm } from '@/components/VerifyOTPForm';
+import {useNavigate} from 'react-router'
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $debug: Boolean!) {
@@ -24,20 +26,20 @@ const LoginForm = () => {
 		}
 	});
 
-	const handleSendOTP = (e) => {
+	const handleSendOTP = (e: any) => {
 		e.preventDefault();
 		login({ variables: { email, debug: isDebug } });
 		
 	};
 
-	const handleToken = (token) => {
+	const handleToken = (token: any) => {
 		alert(token)
 		// todo: store token
 	};
 
 	return (
 		<Stack gap={2}>
-			<Form disabled={otpSent} onSubmit={handleSendOTP}>
+			<Form onSubmit={handleSendOTP}>
 				<Stack gap={4}>
 					<Form.Group controlId="email">
 						<Stack gap={2}>
@@ -96,4 +98,4 @@ export const LoginPage = () => {
 			</Row>
 		</Container>
 	);
-}
+};
