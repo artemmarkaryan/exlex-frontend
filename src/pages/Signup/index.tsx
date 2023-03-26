@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Form, Button, Alert, Stack, Container, Row, Col } from 'react-bootstrap';
 import { UserTypes } from '@/dict/Dict';
 import { useMutation, gql } from '@apollo/client';
-import { VerifyOTPForm } from '@/components/common/VerifyOTPForm';
+import { VerifyOTPForm } from '@/components/VerifyOTPForm';
 
 const SIGNUP_MUTATION = gql`
   mutation Signup($email: String!, $role: Role!, $debug: Boolean!) {
