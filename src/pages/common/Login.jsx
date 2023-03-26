@@ -1,81 +1,97 @@
 import { useState } from 'react';
-// import { useHistory } from 'react-router-dom';
-import { Form as BootForm, Button, Alert, Stack, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Alert, Stack, Container, Row, Col } from 'react-bootstrap';
+import { useMutation, gql } from '@apollo/client';
+import { VerifyOTPForm } from '@/components/common/VerifyOTPForm';
 
-const Form = () => {
+const LOGIN_MUTATION = gql`
+  mutation Login($email: String!, $debug: Boolean!) {
+    login(email: $email, debug: $debug)
+  }
+`;
+
+const isDebug = true;
+
+const LoginForm = () => {
 	const [email, setEmail] = useState('');
-	const [otp, setOTP] = useState('');
-	const [errorMessage, setErrorMessage] = useState('');
-	// const history = useHistory();
-
-	const handleLogin = async (event) => {
-		event.preventDefault();
-
-		try {
-
-			// mock
-			const response = {
-				ok: true
-			}
-
-			if (response.ok) {
-				// Redirect to dashboard after successful login
-				history.push('/dashboard');
-			} else {
-				// Display error message if login fails
-				setErrorMessage('Invalid email or one-time password');
-			}
-		} catch (error) {
-			console.error(error);
-			setErrorMessage('An error occurred. Please try again later.');
+	const [otpSent, setOTPSent] = useState(false)
+	const [errorMessage, setErrorMessage] = useState('')
+	const [login, { loading: loginLoading, error: loginError }] = useMutation(LOGIN_MUTATION, {
+		onCompleted: () => {
+			setOTPSent(true);
+		},
+		onError: (error) => {
+			setErrorMessage(error.message)
 		}
+	});
+
+	const handleSendOTP = (e) => {
+		e.preventDefault();
+		login({ variables: { email, debug: isDebug } });
+		
 	};
 
+	const handleToken = (token) => {
+		alert(token)
+		// todo: store token
+	};
 
 	return (
-		<BootForm onSubmit={handleLogin}>
-			{errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
-			<Stack gap={4}>
-				<BootForm.Group controlId="email">
-					<Stack gap={2}>
-						<BootForm.Label>Email</BootForm.Label>
-						<BootForm.Control
-							type="email"
-							value={email}
-							onChange={(event) => setEmail(event.target.value)}
-							required
-						/>
-						<Button variant="secondary">Отправить одноразовый пароль</Button>
-					</Stack>
-				</BootForm.Group>
+		<Stack gap={2}>
+			<Form disabled={otpSent} onSubmit={handleSendOTP}>
+				<Stack gap={4}>
+					<Form.Group controlId="email">
+						<Stack gap={2}>
+							<Form.Label>Email</Form.Label>
+							<Form.Control
+								type="email"
+								value={email}
+								onChange={(event) => setEmail(event.target.value)}
+								required
+							/>
+							<Button
+								type="submit"
+								disabled={email.length === 0}
+								variant="secondary"
+							>
+								Отправить одноразовый пароль
+							</Button>
+						</Stack>
+					</Form.Group>
+				</Stack>
+			</Form>
 
-				<BootForm.Group controlId="otp">
-					<BootForm.Label>Одноразовый пароль из письма</BootForm.Label>
-					<BootForm.Control
-						type="password"
-						value={otp}
-						onChange={(event) => setOTP(event.target.value)}
-						required
-					/>
-				</BootForm.Group>
+			{/* Alert to show OTP sent message */}
+			{loginError && (
+				<Alert variant="danger">
+					<p>Error: {loginError.message}</p>
+				</Alert>
+			)}
 
-				<Button variant="primary" type="submit">
-					Войти
-				</Button>
-			</Stack>
-		</BootForm>
+			{/* Alert to show OTP sent message */}
+			{otpSent && (
+				<Alert variant="success">
+					OTP has been sent to your email. Please check your inbox and enter the OTP below.
+				</Alert>
+			)}
+
+			<VerifyOTPForm
+				email={email}
+				handleToken={handleToken}
+			/>
+
+		</Stack>
 	)
 }
 
-export const Login = () => {
+export const LoginPage = () => {
 	return (
 		<Container>
-			<Row>
+			<Row >
 				<h1>Вход</h1>
 			</Row>
 			<Row>
-				<Col >
-					<Form />
+				<Col className='col-6' >
+					<LoginForm />
 				</Col>
 			</Row>
 		</Container>
