@@ -1,12 +1,11 @@
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-
 import { Navigation } from '@/components/Navbar'
 import { LoginPage } from '@/pages/Login'
 import { SignupPage } from '@/pages/Signup'
 import { Landing } from '@/pages/Landing';
-import { AuthStates } from '@/dict/Dict'
 import { useState } from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { CustomerProfile } from '@/pages/CustomerProfile';
 
 
 const client = new ApolloClient({
@@ -15,16 +14,15 @@ const client = new ApolloClient({
 });
 
 export const App = () => {
-    const [authState, setAuthState] = useState(AuthStates.UNAUTHENTICATED);
-
     return (
         <ApolloProvider client={client}>
             <Router>
-                <Navigation authState={authState} />
+                <Navigation/>
                 <Routes>
                     <Route path="/" element={<Landing />} />
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/signup" element={<SignupPage />} />
+                    <Route path="/customer/profile" element={<CustomerProfile />} />
                 </Routes>
             </Router>
         </ApolloProvider>

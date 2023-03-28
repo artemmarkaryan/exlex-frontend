@@ -20,29 +20,24 @@ const SignupForm = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [successMessage, setSuccessMessage] = useState('');
 
-    const [signup] = useMutation(SIGNUP_MUTATION, {
-        onCompleted: () => {
-            setErrorMessage('');
-            setSuccessMessage('Одноразовый код отправлен на почту');
-        },
-        onError: (error) => {
-            setErrorMessage(error.message);
-            setSuccessMessage('');
-        }
-    });
 
     const handleSendOTP = (event: any) => {
         event.preventDefault();
-        signup({ variables: { email: email, role: userType, debug: isDebug } });
+        useMutation(SIGNUP_MUTATION, {
+            variables: { email: email, role: userType, debug: isDebug },
+            onCompleted: () => {
+                setErrorMessage('');
+                setSuccessMessage('Одноразовый код отправлен на почту');
+            },
+            onError: (error) => {
+                setErrorMessage(error.message);
+                setSuccessMessage('');
+            }
+        });
     };
 
     const handleOptionChange = (event: any) => {
         setUserType(event.target.value);
-    };
-
-    const handleToken = (token: any) => {
-        alert(token)
-        // todo: store token
     };
 
     return (
@@ -77,11 +72,7 @@ const SignupForm = () => {
                                 onChange={(event) => setEmail(event.target.value)}
                                 required
                             />
-                            <Button
-                                disabled={email.length === 0}
-                                variant="secondary"
-                                type="submit"
-                            >
+                            <Button disabled={email.length === 0} variant="secondary" type="submit" >
                                 Отправить одноразовый пароль
                             </Button>
                         </Stack>
@@ -89,15 +80,11 @@ const SignupForm = () => {
 
                     <Alert variant="danger" message={errorMessage} />
                     <Alert variant="success" message={successMessage} />
-                    
+
                 </Stack>
             </Form>
 
-            <VerifyOTPForm
-                email={email}
-                handleToken={handleToken}
-            />
-
+            <VerifyOTPForm email={email} />
         </>
     )
 }

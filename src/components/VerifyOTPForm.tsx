@@ -1,6 +1,11 @@
+// import { useHistory } from 'react-router-dom';
 import { useState } from 'react';
 import { Form, Stack, Button } from 'react-bootstrap';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation, gql, useQuery } from '@apollo/client';
+import { useAtom } from 'jotai';
+import { tokenAtom, tokenDataAtom } from '@/stores/auth';
+import { Alert } from './Alert';
+import { UserTypes } from '@/dict/Dict';
 
 const VERIFY_OTP_MUTATION = gql`
   mutation VerifyOTP($email: String!, $otp: String!) {
@@ -9,44 +14,48 @@ const VERIFY_OTP_MUTATION = gql`
 `;
 
 export const VerifyOTPForm = (props: any) => {
-  const [otp, setOTP] = useState('');
-  const [verifyOTP, { error: verifyOTPError }] = useMutation(VERIFY_OTP_MUTATION);
+    // const history = useHistory();
 
-  const handleVerifyOTP = async (e: any) => {
-    e.preventDefault();
-    try {
-      const { data } = await verifyOTP({ variables: { email: props.email, otp: otp } });
-      
-      props.handleToken(data.verifyOTP);
-    
-    } catch (error) {
-      console.error(error);
-    }
-  };
+    const [otp, setOTP] = useState('');
+    const [errorMessage, setErrorMessage] = useState('')
+    const [token, setToken] = useAtom(tokenAtom)
+    const [tokenData] = useAtom(tokenDataAtom)
 
-  return (
-    <Form onSubmit={handleVerifyOTP}>
-      <Stack gap={4}>
-        <Form.Group controlId="otp">
-          <Form.Label>Одноразовый пароль из письма</Form.Label>
-          <Form.Control
-            type="text"
-            value={otp}
-            onChange={(event) => setOTP(event.target.value)}
-            required
-          />
-        </Form.Group>
+    const handleVerifyOTP = (e: any) => {
+        e.preventDefault();
 
-        <Button
-          disabled={otp.length === 0}
-          variant="primary"
-          type="submit"
-        >
-          Войти
-        </Button>
+        useQuery(VERIFY_OTP_MUTATION, {
+            variables: { email: props.email, otp: otp },
+            onCompleted: (data) => { 
+                setToken(data);
+                if (tokenData?.Role === UserTypes.CUSTOMER) {
+                    // history.push('/customer/profile')
+                } else (
+                    // todo
+                    alert('VERIFY_OTP_MUTATION returned token with unknown role')
+                )
+            },
+            onError: (error) => { setErrorMessage(error.message) }
+        })
+    };
 
-        {verifyOTPError && <p>Error: {verifyOTPError.message}</p>}
-      </Stack>
-    </Form>
-  );
+    return (
+        <Form onSubmit={handleVerifyOTP}>
+            <Stack gap={4}>
+                <Form.Group controlId="otp">
+                    <Form.Label>Одноразовый пароль из письма</Form.Label>
+                    <Form.Control
+                        type="text"
+                        value={otp}
+                        onChange={(event) => setOTP(event.target.value)}
+                        required
+                    />
+                </Form.Group>
+                <Button disabled={otp.length === 0} variant="primary" type="submit">
+                    Войти
+                </Button>
+                <Alert variant='danger' message={errorMessage} />
+            </Stack>
+        </Form>
+    );
 };

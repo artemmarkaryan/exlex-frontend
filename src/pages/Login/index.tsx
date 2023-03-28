@@ -3,6 +3,8 @@ import { Form, Button, Stack, Container, Row, Col } from 'react-bootstrap';
 import { useMutation, gql } from '@apollo/client';
 import { VerifyOTPForm } from '@/components/VerifyOTPForm';
 import { Alert } from '@/components/Alert'
+import { useAtom } from 'jotai';
+import { tokenAtom } from '@/stores/auth';
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $debug: Boolean!) {
@@ -14,9 +16,9 @@ const isDebug = true;
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
-
     const [errorMessage, setErrorMessage] = useState('')
     const [successMessage, setSuccessMessage] = useState('');
+    const [token, setToken] = useAtom(tokenAtom);
 
     const [login] = useMutation(LOGIN_MUTATION, {
         onCompleted: () => {
@@ -35,11 +37,6 @@ const LoginForm = () => {
 
     };
 
-    const handleToken = (token: any) => {
-        alert(token)
-        // todo: store token
-    };
-
     return (
         <Stack gap={2}>
             <Form onSubmit={handleSendOTP}>
@@ -53,11 +50,7 @@ const LoginForm = () => {
                                 onChange={(event) => setEmail(event.target.value)}
                                 required
                             />
-                            <Button
-                                type="submit"
-                                disabled={email.length === 0}
-                                variant="secondary"
-                            >
+                            <Button type="submit" disabled={email.length === 0} variant="secondary">
                                 Отправить одноразовый пароль
                             </Button>
                         </Stack>
@@ -68,10 +61,7 @@ const LoginForm = () => {
             <Alert variant="danger" message={errorMessage} />
             <Alert variant="success" message={successMessage} />
 
-            <VerifyOTPForm
-                email={email}
-                handleToken={handleToken}
-            />
+            <VerifyOTPForm email={email}/>
 
         </Stack>
     )
