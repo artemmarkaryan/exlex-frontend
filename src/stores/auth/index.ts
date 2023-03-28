@@ -1,7 +1,5 @@
 import { atom } from "jotai"
 
-export const tokenAtom = atom<string | null, [string], void>(null, (get, set, update) => {
-    set(tokenAtom, update)
-})
+export const tokenAtom = atom<string | null>(null)
 
-export const isAuthorizedAton = atom((get) => !!get(tokenAtom))
+export const isAuthorizedAtom = atom((get) => get(tokenAtom) !== null)
