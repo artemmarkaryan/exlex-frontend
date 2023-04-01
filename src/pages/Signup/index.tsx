@@ -21,7 +21,11 @@ const SignupForm = () => {
     const [successMessage, setSuccessMessage] = useState('')
 
     const [signup] =  useMutation(SIGNUP_MUTATION, {
-        variables: { email: email, role: userType.toUpperCase(), debug: isDebug },
+        variables: { 
+            email: email, 
+            role: userType, 
+            debug: isDebug 
+        },
         onCompleted: () => {
             setErrorMessage('')
             setSuccessMessage('Одноразовый код отправлен на почту')
