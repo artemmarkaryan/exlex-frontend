@@ -1,18 +1,10 @@
-import { atom } from "jotai"
-import jwt_decode from 'jwt-decode';
-
-export interface tokenData {
-    UserID: string,
-    Email: string,
-    Role: string
-}
+import { TokenData } from "@/dict/Dict";
+import { parseToken } from "@/util/utils";
+import { atom, useAtom } from "jotai"
+import jwt_decode from 'jwt-decode'
 
 export const tokenAtom = atom<string | null>(null);
-export const tokenDataAtom = atom((get): tokenData | null => {
-    const t = get(tokenAtom);
-    if (typeof t === 'string') {
-        return jwt_decode(t)
-    }  
-    return null
-});
+
+export const tokenDataAtom = atom((get): TokenData | null => parseToken(get(tokenAtom)))
+
 export const isAuthenticatedAtom = atom((get) => get(tokenAtom) !== null);

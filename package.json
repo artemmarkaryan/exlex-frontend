@@ -22,6 +22,7 @@
   "homepage": "https://github.com/artemmarkaryan/exlex-frontend#readme",
   "devDependencies": {
     "@types/react-dom": "^18.0.11",
+    "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/parser": "^5.54.1",
     "@wgwergwegwer/configs": "^1.0.3",
     "eslint-plugin-jsx-a11y": "^6.7.1",
@@ -50,6 +51,6 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.7",
     "react-query": "^3.39.3",
-    "react-router-dom": "^6.9.0"
+    "react-router-dom": "^6.10.0"
   }
 }

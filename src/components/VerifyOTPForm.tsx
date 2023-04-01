@@ -1,43 +1,56 @@
-// import { useHistory } from 'react-router-dom';
-import { useState } from 'react';
-import { Form, Stack, Button } from 'react-bootstrap';
-import { useMutation, gql, useQuery } from '@apollo/client';
-import { useAtom } from 'jotai';
-import { tokenAtom, tokenDataAtom } from '@/stores/auth';
-import { Alert } from './Alert';
-import { UserTypes } from '@/dict/Dict';
+import { useState } from 'react'
+import { Form, Stack, Button } from 'react-bootstrap'
+import { useMutation, gql } from '@apollo/client'
+import { useAtom } from 'jotai'
+import { tokenAtom } from '@/stores/auth'
+import { Alert } from './Alert'
+import { UserTypes } from '@/dict/Dict'
+import { parseToken } from '@/util/utils'
+import { useNavigate } from 'react-router-dom'
 
 const VERIFY_OTP_MUTATION = gql`
   mutation VerifyOTP($email: String!, $otp: String!) {
     verifyOTP(email: $email, otp: $otp)
   }
-`;
+`
 
 export const VerifyOTPForm = (props: any) => {
-    // const history = useHistory();
-
-    const [otp, setOTP] = useState('');
+    const [otp, setOTP] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const [token, setToken] = useAtom(tokenAtom)
-    const [tokenData] = useAtom(tokenDataAtom)
+    const [_, setToken] = useAtom(tokenAtom)
+    const navigate = useNavigate();
+
+    const [verifyOTP] = useMutation(VERIFY_OTP_MUTATION, {
+        variables: { email: props.email, otp: otp },
+        onCompleted: (data) => { 
+            const token = data.verifyOTP
+
+            setErrorMessage('')
+            setToken(token)
+            
+            const role = parseToken(token)?.Role
+
+            if (role?.toLowerCase() === UserTypes.CUSTOMER) {
+                navigate('/customer/profile')
+            } else if (role?.toLowerCase() === UserTypes.EXECUTOR) {
+                navigate('/customer/executor')
+            } else {
+                // todo
+                console.log("role", role);
+                console.log("token", {
+                    "actual": token, // undefined
+                    "expected": data.verifyOTP // token string
+                });
+                alert('VERIFY_OTP_MUTATION returned token with unknown role')
+            }
+        },
+        onError: (error) => { setErrorMessage(error.message) }
+    })    
 
     const handleVerifyOTP = (e: any) => {
-        e.preventDefault();
-
-        useQuery(VERIFY_OTP_MUTATION, {
-            variables: { email: props.email, otp: otp },
-            onCompleted: (data) => { 
-                setToken(data);
-                if (tokenData?.Role === UserTypes.CUSTOMER) {
-                    // history.push('/customer/profile')
-                } else (
-                    // todo
-                    alert('VERIFY_OTP_MUTATION returned token with unknown role')
-                )
-            },
-            onError: (error) => { setErrorMessage(error.message) }
-        })
-    };
+        e.preventDefault()
+        verifyOTP()
+    }
 
     return (
         <Form onSubmit={handleVerifyOTP}>
@@ -57,5 +70,5 @@ export const VerifyOTPForm = (props: any) => {
                 <Alert variant='danger' message={errorMessage} />
             </Stack>
         </Form>
-    );
-};
+    )
+}

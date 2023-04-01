@@ -1,41 +1,38 @@
-import { useState } from 'react';
-import { Form, Button, Stack, Container, Row, Col } from 'react-bootstrap';
-import { useMutation, gql } from '@apollo/client';
-import { VerifyOTPForm } from '@/components/VerifyOTPForm';
+import { useState } from 'react'
+import { Form, Button, Stack, Container, Row, Col } from 'react-bootstrap'
+import { useMutation, gql } from '@apollo/client'
+import { VerifyOTPForm } from '@/components/VerifyOTPForm'
 import { Alert } from '@/components/Alert'
-import { useAtom } from 'jotai';
-import { tokenAtom } from '@/stores/auth';
 
 const LOGIN_MUTATION = gql`
   mutation Login($email: String!, $debug: Boolean!) {
     login(email: $email, debug: $debug)
   }
-`;
+`
 
-const isDebug = true;
+const isDebug = true
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const [successMessage, setSuccessMessage] = useState('');
-    const [token, setToken] = useAtom(tokenAtom);
+    const [successMessage, setSuccessMessage] = useState('')
 
     const [login] = useMutation(LOGIN_MUTATION, {
+        variables: { email: email, debug: isDebug } ,
         onCompleted: () => {
-            setErrorMessage('');
-            setSuccessMessage('Одноразовый код отправлен на почту');
+            setErrorMessage('')
+            setSuccessMessage('Одноразовый код отправлен на почту')
         },
         onError: (error) => {
-            setErrorMessage(error.message);
-            setSuccessMessage('');
+            setErrorMessage(error.message)
+            setSuccessMessage('')
         }
-    });
+    })
 
     const handleSendOTP = (e: any) => {
-        e.preventDefault();
-        login({ variables: { email, debug: isDebug } });
-
-    };
+        e.preventDefault()
+        login()  
+    }
 
     return (
         <Stack gap={2}>
@@ -79,5 +76,5 @@ export const LoginPage = () => {
                 </Col>
             </Row>
         </Container>
-    );
-};
+    )
+}

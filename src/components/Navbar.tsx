@@ -1,11 +1,10 @@
-import React from 'react';
-import { Navbar, Nav, Container, Image } from 'react-bootstrap';
+import React from 'react'
+import { Navbar, Nav, Container, Image } from 'react-bootstrap'
 import { UserTypes } from '@/dict/Dict'
 import logo from '/logo.svg'
-import { useAtom } from 'jotai';
-import { isAuthenticatedAtom, tokenDataAtom } from '@/stores/auth';
-import { Alert } from './Alert';
-
+import { useAtom } from 'jotai'
+import { isAuthenticatedAtom, tokenDataAtom } from '@/stores/auth'
+import { Alert } from './Alert'
 
 const Brand = () => {
     return (
@@ -16,27 +15,31 @@ const Brand = () => {
 }
 
 const NavigationContent = () => {
-    const [isAuthenticated] = useAtom(isAuthenticatedAtom);
-    const [tokenData] = useAtom(tokenDataAtom);
+    const [isAuthenticated] = useAtom(isAuthenticatedAtom)
+    const [tokenData] = useAtom(tokenDataAtom)
+    const role = tokenData?.Role
 
     if (!isAuthenticated) {
         return (<>
             <Nav.Link href="/login">Вход</Nav.Link>
             <Nav.Link href="/signup">Регистрация</Nav.Link>
         </>)
-    } else if (tokenData?.Role === UserTypes.CUSTOMER){
+    }
+    
+    if (role === UserTypes.CUSTOMER) {
         return <>
             <Nav.Link href="/customer/profile">Профиль</Nav.Link>
         </>
-    } else if (tokenData?.Role === UserTypes.EXECUTOR){
+    }
+    if (role === UserTypes.EXECUTOR) {
         return <>
             <Nav.Link href="/executor/profile">Профиль</Nav.Link>
         </>
-    } else {
-        return <>
-            <Alert variant='danger' message='unknown auth state'></Alert>
-        </>
-    }
+    } 
+
+    return <>
+        <Alert variant='danger' message='unknown auth state'></Alert>
+    </> 
 }
 
 export const Navigation = () => {
@@ -53,5 +56,5 @@ export const Navigation = () => {
                 </Nav>
             </Container>
         </Navbar>
-    );
+    )
 }

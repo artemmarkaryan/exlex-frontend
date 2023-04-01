@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
 import { useAtom } from "jotai";
 import { Alert } from "@/components/Alert";
-import { tokenAtom, tokenDataAtom, tokenData } from "@/stores/auth"
+import { tokenAtom, tokenData } from "@/stores/auth"
 
 const GET_CUSTOMER = gql`
   query GetCustomer($id: ID!) {
