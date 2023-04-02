@@ -1,17 +1,34 @@
 import React from 'react'
+import { useNavigate } from "react-router-dom";
 import { Navbar, Nav, Container, Image } from 'react-bootstrap'
 import { UserTypes } from '@/dict/Dict'
 import logo from '/logo.svg'
 import { useAtom } from 'jotai'
 import { isAuthenticatedAtom, tokenDataAtom } from '@/stores/auth'
 import { Alert } from './Alert'
+import { useNavigation } from 'react-router-dom'
 
 const Brand = () => {
+
     return (
         <Navbar.Brand href="/">
             <Image src={logo} height="40px" className="d-inline-block align-top" alt="Logo" />
         </Navbar.Brand>
     )
+}
+
+const Logout = () => {
+    const navigate = useNavigate()
+
+    return <>
+        <Nav.Link
+            onClick={(e) => {
+                localStorage.removeItem('token')
+                navigate('/')
+            }}>
+            Выйти
+        </Nav.Link>
+    </>
 }
 
 const NavigationContent = () => {
@@ -25,21 +42,23 @@ const NavigationContent = () => {
             <Nav.Link href="/signup">Регистрация</Nav.Link>
         </>)
     }
-    
+
     if (role === UserTypes.CUSTOMER) {
         return <>
             <Nav.Link href="/customer/profile">Профиль</Nav.Link>
+            <Logout />
         </>
     }
     if (role === UserTypes.EXECUTOR) {
         return <>
             <Nav.Link href="/executor/profile">Профиль</Nav.Link>
+            <Logout />
         </>
-    } 
+    }
 
     return <>
         <Alert variant='danger' message='unknown auth state'></Alert>
-    </> 
+    </>
 }
 
 export const Navigation = () => {

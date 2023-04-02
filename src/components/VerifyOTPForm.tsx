@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Form, Stack, Button } from 'react-bootstrap'
 import { useMutation, gql } from '@apollo/client'
 import { useAtom } from 'jotai'
-import { tokenAtom } from '@/stores/auth'
 import { Alert } from './Alert'
 import { UserTypes } from '@/dict/Dict'
 import { parseToken } from '@/util/utils'
@@ -17,7 +16,6 @@ const VERIFY_OTP_MUTATION = gql`
 export const VerifyOTPForm = (props: any) => {
     const [otp, setOTP] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const [_, setToken] = useAtom(tokenAtom)
     const navigate = useNavigate();
 
     const [verifyOTP] = useMutation(VERIFY_OTP_MUTATION, {
@@ -26,7 +24,7 @@ export const VerifyOTPForm = (props: any) => {
             const token = data.verifyOTP
 
             setErrorMessage('')
-            setToken(token)
+            localStorage.setItem('token', token)
             
             const role = parseToken(token)?.Role
 
