@@ -1,15 +1,15 @@
-import { tokenData } from "@/stores/auth"
-import jwt_decode from 'jwt-decode'
+import { TokenData } from '@/types/auth';
+import jwt_decode from 'jwt-decode';
 
-export const parseToken = (token: string | null): tokenData => {
+export const parseToken = (token: string | null): TokenData | null => {
     if (token === null) {
-        return null
+        return null;
     }
 
     try {
-        return typeof token === 'string' ? jwt_decode<tokenData>(token) : null
+        return typeof token === 'string' ? jwt_decode<TokenData>(token) : null;
     } catch (error) {
-        console.log("data from token", error)
-        return null
+        console.log('data from token', error);
+        return null;
     }
-}
+};

@@ -3,10 +3,10 @@
         "node": false,
         "es6": true
     },
-    "extends": ["./node_modules/@wgwergwegwer/configs/src/eslintrc-base.js"],
+    "extends": ["./node_modules/@wgwergwegwer/configs/src/eslintrc-typescript.js"],
     "overrides": [
         {
-            "files": "src/**/*.jsx",
+            "files": "src/**/*.tsx",
             "parserOptions": {
                 "ecmaFeatures": {
                     "jsx": true
@@ -19,7 +19,7 @@
             "rules": {
                 "react/prop-types": "off",
                 "react/react-in-jsx-scope": "off",
-                "indent": ["error", "tab"]
+                "indent": "off"
             }
         }
     ]

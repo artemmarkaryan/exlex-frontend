@@ -1,7 +1,7 @@
 import React from 'react'
 import { useNavigate } from "react-router-dom";
 import { Navbar, Nav, Container, Image } from 'react-bootstrap'
-import { UserTypes } from '@/dict/Dict'
+import { UserTypes } from '@/types/auth'
 import logo from '/logo.svg'
 import { useAtom } from 'jotai'
 import { isAuthenticatedAtom, tokenDataAtom } from '@/stores/auth'
