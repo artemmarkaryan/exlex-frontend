@@ -5,8 +5,8 @@ import { useAtom } from 'jotai';
 import { tokenDataAtom } from '@/stores/auth';
 
 const GET_CUSTOMER = gql`
-    query SelfCustomerProfile($id: ID!) {
-        selfCustomerProfile(id: $id) {
+    query SelfCustomerProfile {
+        selfCustomerProfile {
             fullName
         }
     }
@@ -26,12 +26,11 @@ export const CustomerProfile: React.FC = () => {
     const [td, _] = useAtom(tokenDataAtom);
 
     useQuery(GET_CUSTOMER, {
-        variables: { id: td ? td.UserID : '' },
         onCompleted: (data: any) => {
             setName(data.customer.fullName);
         },
         onError: (error: any) => {
-            setFatal(error.message);
+            setFatal('get customer: ' + error.message);
         },
     });
 
@@ -41,7 +40,7 @@ export const CustomerProfile: React.FC = () => {
             setSuccess('Данные профиля обновлены');
         },
         onError: (error: any) => {
-            setError(error.message);
+            setError('set customer: ' + error.message);
         },
     });
 

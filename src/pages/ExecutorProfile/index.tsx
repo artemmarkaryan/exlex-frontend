@@ -1,12 +1,18 @@
-import { tokenDataAtom } from '@/stores/auth';
-import { gql, useQuery } from '@apollo/client';
-import { useAtom } from 'jotai';
+import { gql, useQuery, useMutation } from '@apollo/client';
 import React, { useEffect, useState } from 'react';
-import { Alert, Button, Container, Form, Row, Stack } from 'react-bootstrap';
+import {
+    Alert,
+    Button,
+    Col,
+    Container,
+    Form,
+    Row,
+    Stack,
+} from 'react-bootstrap';
 
 const GET_EXECUTOR = gql`
-    query selfExecutorProfile($id: ID!) {
-        selfExecutorProfile(id: $id) {
+    query selfExecutorProfile {
+        selfExecutorProfile {
             fullName
             workExperience
             educationTypeID
@@ -28,20 +34,26 @@ const GET_EDUCATION_AND_SPECIALITIES = gql`
     }
 `;
 
-export const ExecutorProfile: React.FC = () => {
-    const [tokenData] = useAtom(tokenDataAtom);
+const SET_EXECUTOR = gql`
+    mutation setExecutorProfile($data: SetExecutorProfileData!) {
+        setExecutorProfile(data: $data)
+    }
+`;
 
-    const [error, setError] = useState('');
+export const ExecutorProfile: React.FC = () => {
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
+
     const [educationDict, setEducationDict] = useState([]);
     const [specialitiesDict, setSpecialitiesDict] = useState([]);
+
     const [fullName, setFullName] = useState('');
     const [experience, setExperience] = useState(0);
-    const [education, setEducation] = useState('');
+    const [education, setEducation] = useState(null);
     const [specialities, setSpecialities] = useState([]);
 
     useQuery(GET_EXECUTOR, {
-        variables: { id: tokenData ? tokenData.UserID : '' },
-        onError: (error) => setError(error.message),
+        onError: (error) => setError('get executor: ' + error.message),
         onCompleted: (data) => {
             const profile = data.selfExecutorProfile;
             setFullName(profile.fullName);
@@ -51,8 +63,39 @@ export const ExecutorProfile: React.FC = () => {
         },
     });
 
+    const [setExecutor] = useMutation(SET_EXECUTOR, {
+        variables: {
+            data: {
+                fullName: fullName,
+                workExperience: experience,
+                educationTypeID: education ? education.id : '',
+                specialization: specialities ? specialities : [],
+            },
+        },
+        onError: (error) => {
+            setSuccess(null);
+            setError('set executor: ' + error.message);
+        },
+        onCompleted: () => {
+            setSuccess('Данные обновлены');
+        },
+    });
+
+    useEffect(() => {
+        console.log({
+            what: 'data changed',
+            fullName: fullName,
+            experience: experience,
+            education: education,
+            specialities: specialities,
+        });
+    }, [fullName, experience, education, specialities]);
+
     useQuery(GET_EDUCATION_AND_SPECIALITIES, {
-        onError: (error) => setError(error.message),
+        onError: (error) => {
+            setSuccess(null);
+            setError('get education and specialities: ' + error.message);
+        },
         onCompleted: (data) => {
             setEducationDict(data.educationTypes);
             setSpecialitiesDict(data.specialities);
@@ -60,7 +103,17 @@ export const ExecutorProfile: React.FC = () => {
     });
 
     const handleFormSubmit = (event: any) => {
+        setSuccess(null);
+        setError(null);
         event.preventDefault();
+        console.log({
+            what: 'form submit',
+            fullName: fullName,
+            experience: experience,
+            education: education,
+            specialities: specialities,
+        });
+        setExecutor();
         // Handle form submission logic here
     };
 
@@ -73,7 +126,7 @@ export const ExecutorProfile: React.FC = () => {
             <Row>
                 <h1>Профиль</h1>
             </Row>
-            <Row>
+            <Row className="mb-3">
                 <Form onSubmit={handleFormSubmit}>
                     <Stack gap={2}>
                         <Form.Group controlId="fullName">
@@ -102,45 +155,42 @@ export const ExecutorProfile: React.FC = () => {
                                 value={education}
                                 onChange={(e) => setEducation(e.target.value)}
                             >
-                                {Object.values(educationDict).map(
-                                    (education) => (
-                                        <option
-                                            key={education.id}
-                                            value={education.title}
-                                        >
-                                            {education.title}
-                                        </option>
-                                    ),
-                                )}
+                                <option value={'unspecified'}>
+                                    Не выбрано
+                                </option>
+                                {Object.values(educationDict).map((e) => (
+                                    <option key={e.id} value={e.id}>
+                                        {e.title}
+                                    </option>
+                                ))}
                             </Form.Control>
                         </Form.Group>
 
                         <Form.Group controlId="specialities">
                             <Form.Label>Специализация</Form.Label>
-                            <Form.Control
-                                as="select"
-                                multiple
-                                value={specialities}
-                                onChange={(e) =>
-                                    setSpecialities(
-                                        Array.from(
-                                            e.target.selectedOptions,
-                                            (option) => option.value,
-                                        ),
-                                    )
-                                }
-                            >
-                                {Object.values(specialitiesDict).map(
-                                    (speciality) => (
-                                        <option
-                                            key={speciality.id}
-                                            value={speciality.title}
-                                        >
-                                            {speciality.title}
-                                        </option>
-                                    ),
-                                )}
-                            </Form.Control>
+                            {Object.values(specialitiesDict).map((s) => (
+                                <Form.Check
+                                    type="checkbox"
+                                    id={s.id}
+                                    key={s.id}
+                                    label={s.title}
+                                    checked={specialities.includes(s.id)}
+                                    onChange={(event) => {
+                                        if (event.target.checked) {
+                                            setSpecialities([
+                                                ...specialities,
+                                                s.id,
+                                            ]);
+                                        } else {
+                                            setSpecialities(
+                                                specialities.filter(
+                                                    (id) => id !== s.id,
+                                                ),
+                                            );
+                                        }
+                                    }}
+                                />
+                            ))}
                         </Form.Group>
 
                         <Button variant="primary" type="submit">
@@ -148,6 +198,12 @@ export const ExecutorProfile: React.FC = () => {
                         </Button>
                     </Stack>
                 </Form>
+            </Row>
+
+            <Row>
+                <Col>
+                    {success && <Alert variant="success">{success}</Alert>}
+                </Col>
             </Row>
         </Container>
     );
