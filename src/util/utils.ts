@@ -1,13 +1,14 @@
 import { TokenData } from '@/types/auth';
-import jwt_decode from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
 export const parseToken = (token: string | null): TokenData | null => {
     if (token === null) {
+        console.log('null token', token);
         return null;
     }
 
     try {
-        return typeof token === 'string' ? jwt_decode<TokenData>(token) : null;
+        return typeof token === 'string' ? jwtDecode<TokenData>(token) : null;
     } catch (error) {
         console.log('data from token', error);
         return null;

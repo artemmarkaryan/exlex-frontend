@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { Form, Stack, Button } from 'react-bootstrap';
+import { Form, Stack, Button, Alert } from 'react-bootstrap';
 import { useMutation, gql } from '@apollo/client';
 import { useAtom } from 'jotai';
-import { Alert } from './Alert';
 import { UserTypes } from '@/types/auth';
 import { parseToken } from '@/util/utils';
 import { useNavigate } from 'react-router-dom';
+import { tokenAtom } from '@/stores/auth';
 
 const VERIFY_OTP_MUTATION = gql`
     mutation VerifyOTP($email: String!, $otp: String!) {
@@ -17,6 +17,7 @@ export const VerifyOTPForm = (props: any) => {
     const [otp, setOTP] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+    const [, setToken] = useAtom(tokenAtom);
 
     const [verifyOTP] = useMutation(VERIFY_OTP_MUTATION, {
         variables: { email: props.email, otp: otp },
@@ -24,7 +25,7 @@ export const VerifyOTPForm = (props: any) => {
             const token = data.verifyOTP;
 
             setErrorMessage('');
-            localStorage.setItem('token', token);
+            setToken(token);
 
             const role = parseToken(token)?.Role;
 
@@ -34,11 +35,11 @@ export const VerifyOTPForm = (props: any) => {
                 navigate('/customer/executor');
             } else {
                 // todo
-                console.log('role', role);
-                console.log('token', {
-                    actual: token, // undefined
-                    expected: data.verifyOTP, // token string
-                });
+                // console.log('role', role);
+                // console.log('token', {
+                //     actual: token, // undefined
+                //     expected: data.verifyOTP, // token string
+                // });
                 alert('VERIFY_OTP_MUTATION returned token with unknown role');
             }
         },
@@ -71,7 +72,7 @@ export const VerifyOTPForm = (props: any) => {
                 >
                     Войти
                 </Button>
-                <Alert variant="danger" message={errorMessage} />
+                {errorMessage && <Alert variant="danger">{errorMessage}</Alert>}
             </Stack>
         </Form>
     );

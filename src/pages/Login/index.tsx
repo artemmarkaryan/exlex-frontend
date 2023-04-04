@@ -1,38 +1,45 @@
-import { useState } from 'react'
-import { Form, Button, Stack, Container, Row, Col } from 'react-bootstrap'
-import { useMutation, gql } from '@apollo/client'
-import { VerifyOTPForm } from '@/components/VerifyOTPForm'
-import { Alert } from '@/components/Alert'
+import { useState } from 'react';
+import {
+    Form,
+    Button,
+    Stack,
+    Container,
+    Row,
+    Col,
+    Alert,
+} from 'react-bootstrap';
+import { useMutation, gql } from '@apollo/client';
+import { VerifyOTPForm } from '@/components/VerifyOTPForm';
 
 const LOGIN_MUTATION = gql`
-  mutation Login($email: String!, $debug: Boolean!) {
-    login(email: $email, debug: $debug)
-  }
-`
+    mutation Login($email: String!, $debug: Boolean!) {
+        login(email: $email, debug: $debug)
+    }
+`;
 
-const isDebug = true
+const isDebug = true;
 
 const LoginForm = () => {
-    const [email, setEmail] = useState('')
-    const [errorMessage, setErrorMessage] = useState('')
-    const [successMessage, setSuccessMessage] = useState('')
+    const [email, setEmail] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const [login] = useMutation(LOGIN_MUTATION, {
-        variables: { email: email, debug: isDebug } ,
+        variables: { email: email, debug: isDebug },
         onCompleted: () => {
-            setErrorMessage('')
-            setSuccessMessage('Одноразовый код отправлен на почту')
+            setError('');
+            setSuccess('Одноразовый код отправлен на почту');
         },
         onError: (error) => {
-            setErrorMessage(error.message)
-            setSuccessMessage('')
-        }
-    })
+            setError(error.message);
+            setSuccess('');
+        },
+    });
 
     const handleSendOTP = (e: any) => {
-        e.preventDefault()
-        login()  
-    }
+        e.preventDefault();
+        login();
+    };
 
     return (
         <Stack gap={2}>
@@ -44,10 +51,16 @@ const LoginForm = () => {
                             <Form.Control
                                 type="email"
                                 value={email}
-                                onChange={(event) => setEmail(event.target.value)}
+                                onChange={(event) =>
+                                    setEmail(event.target.value)
+                                }
                                 required
                             />
-                            <Button type="submit" disabled={email.length === 0} variant="secondary">
+                            <Button
+                                type="submit"
+                                disabled={email.length === 0}
+                                variant="secondary"
+                            >
                                 Отправить одноразовый пароль
                             </Button>
                         </Stack>
@@ -55,26 +68,25 @@ const LoginForm = () => {
                 </Stack>
             </Form>
 
-            <Alert variant="danger" message={errorMessage} />
-            <Alert variant="success" message={successMessage} />
+            {error && <Alert variant="danger">{error}</Alert>}
+            {success && <Alert variant="success">{success}</Alert>}
 
-            <VerifyOTPForm email={email}/>
-
+            <VerifyOTPForm email={email} />
         </Stack>
-    )
-}
+    );
+};
 
 export const LoginPage = () => {
     return (
         <Container>
-            <Row >
+            <Row>
                 <h1>Вход</h1>
             </Row>
             <Row>
-                <Col className='col-6' >
+                <Col className="col-6">
                     <LoginForm />
                 </Col>
             </Row>
         </Container>
-    )
-}
+    );
+};

@@ -1,9 +1,16 @@
 import { useState } from 'react';
-import { Form, Button, Stack, Container, Row, Col } from 'react-bootstrap';
+import {
+    Form,
+    Button,
+    Stack,
+    Container,
+    Row,
+    Col,
+    Alert,
+} from 'react-bootstrap';
 import { UserTypes } from '@/types/auth';
 import { useMutation, gql } from '@apollo/client';
 import { VerifyOTPForm } from '@/components/VerifyOTPForm';
-import { Alert } from '@/components/Alert';
 
 const SIGNUP_MUTATION = gql`
     mutation Signup($email: String!, $role: Role!, $debug: Boolean!) {
@@ -17,8 +24,8 @@ const SignupForm = () => {
     const [email, setEmail] = useState('');
     const [userType, setUserType] = useState(UserTypes.CUSTOMER);
 
-    const [errorMessage, setErrorMessage] = useState('');
-    const [successMessage, setSuccessMessage] = useState('');
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
 
     const [signup] = useMutation(SIGNUP_MUTATION, {
         variables: {
@@ -27,12 +34,12 @@ const SignupForm = () => {
             debug: isDebug,
         },
         onCompleted: () => {
-            setErrorMessage('');
-            setSuccessMessage('Одноразовый код отправлен на почту');
+            setError('');
+            setSuccess('Одноразовый код отправлен на почту');
         },
         onError: (error) => {
-            setErrorMessage(error.message);
-            setSuccessMessage('');
+            setError(error.message);
+            setSuccess('');
         },
     });
 
@@ -89,8 +96,8 @@ const SignupForm = () => {
                         </Stack>
                     </Form.Group>
 
-                    <Alert variant="danger" message={errorMessage} />
-                    <Alert variant="success" message={successMessage} />
+                    {error && <Alert variant="danger">{error}</Alert>}
+                    {success && <Alert variant="success">{success}</Alert>}
                 </Stack>
             </Form>
 
