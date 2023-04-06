@@ -3,6 +3,8 @@ lockfileVersion: 5.4
 specifiers:
   '@apollo/client': ^3.7.10
   '@popperjs/core': ^2.11.6
+  '@types/react': ^18.0.33
+  '@types/react-bootstrap-date-picker': ^4.0.9
   '@types/react-dom': ^18.0.11
   '@types/react-router-dom': ^5.3.3
   '@typescript-eslint/eslint-plugin': ^5.12.1
@@ -43,13 +45,15 @@ dependencies:
   jotai: 2.0.3_react@18.2.0
   jwt-decode: 3.1.2
   react: 18.2.0
-  react-bootstrap: 2.7.2_biqbaboplfbrettd7655fr4n2y
+  react-bootstrap: 2.7.2_zn3vyfk3tbnwebg5ldvieekjaq
   react-dom: 18.2.0_react@18.2.0
   react-hook-form: 7.43.8_react@18.2.0
   react-query: 3.39.3_biqbaboplfbrettd7655fr4n2y
   react-router-dom: 6.10.0_biqbaboplfbrettd7655fr4n2y
 
 devDependencies:
+  '@types/react': 18.0.33
+  '@types/react-bootstrap-date-picker': 4.0.9
   '@types/react-dom': 18.0.11
   '@types/react-router-dom': 5.3.3
   '@typescript-eslint/parser': 5.54.1_vgl77cfdswitgr47lm5swmv43m
@@ -727,17 +731,23 @@ packages:
   /@types/prop-types/15.7.5:
     resolution: {integrity: sha512-JCB8C6SnDoQf0cNycqd/35A7MjcnK+ZTqE7judS6o7utxUCg6imJg3QK2qzHKszlTjcj2cn+NwMB2i96ubpj7w==}
 
+  /@types/react-bootstrap-date-picker/4.0.9:
+    resolution: {integrity: sha512-d6ctVWLXPU66at0OdwmETxT9gCjlfzPuJANRyssx4w16KxP+rvmp0i5Aw+UAqV9EbfaB91Akuwt/lsa4DvBMXg==}
+    dependencies:
+      '@types/react': 18.0.33
+    dev: true
+
   /@types/react-dom/18.0.11:
     resolution: {integrity: sha512-O38bPbI2CWtgw/OoQoY+BRelw7uysmXbWvw3nLWO21H1HSh+GOlqPuXshJfjmpNlKiiSDG9cc1JZAaMmVdcTlw==}
     dependencies:
-      '@types/react': 18.0.28
+      '@types/react': 18.0.33
     dev: true
 
   /@types/react-router-dom/5.3.3:
     resolution: {integrity: sha512-kpqnYK4wcdm5UaWI3fLcELopqLrHgLqNsdpHauzlQktfkHL3npOSwtj1Uz9oKBAzs7lFtVkV8j83voAz2D8fhw==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.28
+      '@types/react': 18.0.33
       '@types/react-router': 5.1.20
     dev: true
 
@@ -745,17 +755,17 @@ packages:
     resolution: {integrity: sha512-jGjmu/ZqS7FjSH6owMcD5qpq19+1RS9DeVRqfl1FeBMxTDQAGwlMWOcs52NDoXaNKyG3d1cYQFMs9rCrb88o9Q==}
     dependencies:
       '@types/history': 4.7.11
-      '@types/react': 18.0.28
+      '@types/react': 18.0.33
     dev: true
 
   /@types/react-transition-group/4.4.5:
     resolution: {integrity: sha512-juKD/eiSM3/xZYzjuzH6ZwpP+/lejltmiS3QEzV/vmb/Q8+HfDmxu+Baga8UEMGBqV88Nbg4l2hY/K2DkyaLLA==}
     dependencies:
-      '@types/react': 18.0.28
+      '@types/react': 18.0.33
     dev: false
 
-  /@types/react/18.0.28:
-    resolution: {integrity: sha512-RD0ivG1kEztNBdoAK7lekI9M+azSnitIn85h4iOiaLjaTrMjzslhaqCGaI4IyCJ1RljWiLCEu4jyrLLgqxBTew==}
+  /@types/react/18.0.33:
+    resolution: {integrity: sha512-sHxzVxeanvQyQ1lr8NSHaj0kDzcNiGpILEVt69g9S31/7PfMvNCKLKcsHw4lYKjs3cGNJjXSP4mYzX43QlnjNA==}
     dependencies:
       '@types/prop-types': 15.7.5
       '@types/scheduler': 0.16.3
@@ -2721,7 +2731,7 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /react-bootstrap/2.7.2_biqbaboplfbrettd7655fr4n2y:
+  /react-bootstrap/2.7.2_zn3vyfk3tbnwebg5ldvieekjaq:
     resolution: {integrity: sha512-WDSln+mG4RLLFO01stkj2bEx/3MF4YihK9D/dWnHaSxOiQZLbhhlf95D2Jb20X3t2m7vMxRe888FVrfLJoGmmA==}
     peerDependencies:
       '@types/react': '>=16.14.8'
@@ -2734,6 +2744,7 @@ packages:
       '@babel/runtime': 7.21.0
       '@restart/hooks': 0.4.9_react@18.2.0
       '@restart/ui': 1.6.2_biqbaboplfbrettd7655fr4n2y
+      '@types/react': 18.0.33
       '@types/react-transition-group': 4.4.5
       classnames: 2.3.2
       dom-helpers: 5.2.1
@@ -3308,7 +3319,7 @@ packages:
       react: '>=15.0.0'
     dependencies:
       '@babel/runtime': 7.21.0
-      '@types/react': 18.0.28
+      '@types/react': 18.0.33
       invariant: 2.2.4
       react: 18.2.0
       react-lifecycles-compat: 3.0.4
@@ -3319,7 +3330,7 @@ packages:
     peerDependencies:
       react: '>=17.0.0'
     dependencies:
-      '@types/react': 18.0.28
+      '@types/react': 18.0.33
       react: 18.2.0
     dev: false
 

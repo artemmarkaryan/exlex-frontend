@@ -27,12 +27,8 @@ const Logout = () => {
             <Nav.Link
                 onClick={(e) => {
                     localStorage.removeItem('token');
-
-                    if (window.location.pathname === '/') {
-                        window.location.reload();
-                    } else {
-                        navigate('/');
-                    }
+                    navigate('/');
+                    window.location.reload();
                 }}
             >
                 Выйти

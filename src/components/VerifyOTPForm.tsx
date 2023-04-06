@@ -32,7 +32,7 @@ export const VerifyOTPForm = (props: any) => {
             if (role?.toLowerCase() === UserTypes.CUSTOMER) {
                 navigate('/customer/profile');
             } else if (role?.toLowerCase() === UserTypes.EXECUTOR) {
-                navigate('/customer/executor');
+                navigate('/executor/profile');
             } else {
                 // todo
                 // console.log('role', role);

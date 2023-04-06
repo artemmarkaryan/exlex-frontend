@@ -19,12 +19,12 @@ export const ExecutorProfile: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const [educationDict, setEducationDict] = useState([]);
-    const [specialitiesDict, setSpecialitiesDict] = useState([]);
+    const [educationDict, setEducationDict] = useState<string[]>([]);
+    const [specialitiesDict, setSpecialitiesDict] = useState<string[]>([]);
 
-    const [fullName, setFullName] = useState('');
-    const [experience, setExperience] = useState(0);
-    const [education, setEducation] = useState(null);
+    const [fullName, setFullName] = useState<string>('');
+    const [experience, setExperience] = useState<number>(0);
+    const [education, setEducation] = useState<string | null>(null);
     const [specialities, setSpecialities] = useState([]);
 
     useQuery(GET_EXECUTOR, {
@@ -43,7 +43,7 @@ export const ExecutorProfile: React.FC = () => {
             data: {
                 fullName: fullName,
                 workExperience: experience,
-                educationTypeID: education ? education.id : '',
+                educationTypeID: education ? education : '',
                 specialization: specialities ? specialities : [],
             },
         },
@@ -83,9 +83,9 @@ export const ExecutorProfile: React.FC = () => {
             <Row>
                 <h1>Профиль</h1>
             </Row>
-            <Row className="mb-3">
-                <Form onSubmit={handleFormSubmit}>
-                    <Stack gap={2}>
+            <Row>
+                <Form onSubmit={handleFormSubmit} className="mb-3">
+                    <Stack gap={2} className="mb-3">
                         <Form.Group controlId="fullName">
                             <Form.Label>Полное имя</Form.Label>
                             <Form.Control
@@ -109,7 +109,7 @@ export const ExecutorProfile: React.FC = () => {
                             <Form.Control
                                 as="select"
                                 type="text"
-                                value={education}
+                                value={education ? education : ''}
                                 onChange={(e) => setEducation(e.target.value)}
                             >
                                 <option value={'unspecified'}>
@@ -149,11 +149,11 @@ export const ExecutorProfile: React.FC = () => {
                                 />
                             ))}
                         </Form.Group>
-
-                        <Button variant="primary" type="submit">
-                            Сохранить
-                        </Button>
                     </Stack>
+
+                    <Button variant="primary" type="submit">
+                        Сохранить
+                    </Button>
                 </Form>
             </Row>
 

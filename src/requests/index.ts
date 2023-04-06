@@ -50,7 +50,6 @@ export const LOGIN_MUTATION = gql`
     }
 `;
 
-
 export const SIGNUP_MUTATION = gql`
     mutation Signup($email: String!, $role: Role!, $debug: Boolean!) {
         signup(email: $email, role: $role, debug: $debug)
