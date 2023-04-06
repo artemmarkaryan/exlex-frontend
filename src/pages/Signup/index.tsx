@@ -11,12 +11,7 @@ import {
 import { UserTypes } from '@/types/auth';
 import { useMutation, gql } from '@apollo/client';
 import { VerifyOTPForm } from '@/components/VerifyOTPForm';
-
-const SIGNUP_MUTATION = gql`
-    mutation Signup($email: String!, $role: Role!, $debug: Boolean!) {
-        signup(email: $email, role: $role, debug: $debug)
-    }
-`;
+import { SIGNUP_MUTATION } from '@/requests';
 
 const isDebug = true;
 

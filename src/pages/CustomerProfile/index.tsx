@@ -3,20 +3,7 @@ import React, { useState } from 'react';
 import { gql, useQuery, useMutation } from '@apollo/client';
 import { useAtom } from 'jotai';
 import { tokenDataAtom } from '@/stores/auth';
-
-const GET_CUSTOMER = gql`
-    query SelfCustomerProfile {
-        selfCustomerProfile {
-            fullName
-        }
-    }
-`;
-
-const SET_CUSTOMER = gql`
-    mutation SetCustomerProfile($data: SetCustomerProfileData!) {
-        setCustomerProfile(data: $data)
-    }
-`;
+import { GET_CUSTOMER, SET_CUSTOMER } from '@/requests';
 
 export const CustomerProfile: React.FC = () => {
     const [name, setName] = useState('');

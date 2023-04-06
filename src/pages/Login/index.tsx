@@ -10,12 +10,7 @@ import {
 } from 'react-bootstrap';
 import { useMutation, gql } from '@apollo/client';
 import { VerifyOTPForm } from '@/components/VerifyOTPForm';
-
-const LOGIN_MUTATION = gql`
-    mutation Login($email: String!, $debug: Boolean!) {
-        login(email: $email, debug: $debug)
-    }
-`;
+import { LOGIN_MUTATION } from '@/requests';
 
 const isDebug = true;
 

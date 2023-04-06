@@ -16,6 +16,7 @@ import { CustomerProfile } from '@/pages/CustomerProfile';
 import { useAtom } from 'jotai';
 import { tokenAtom } from '@/stores/auth';
 import { ExecutorProfile } from '@/pages/ExecutorProfile';
+import { CustomerSearch } from '@/pages/CustomerNewSearch';
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:8079/query',
@@ -30,6 +31,10 @@ const AppRoutes = React.memo(() => {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/customer/profile" element={<CustomerProfile />} />
+                <Route
+                    path="/customer/search/new"
+                    element={<CustomerSearch />}
+                />
                 <Route path="/executor/profile" element={<ExecutorProfile />} />
             </Routes>
         </Router>

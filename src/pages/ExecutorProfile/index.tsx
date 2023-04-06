@@ -1,5 +1,10 @@
+import {
+    GET_EDUCATION_AND_SPECIALITIES,
+    GET_EXECUTOR,
+    SET_EXECUTOR,
+} from '@/requests';
 import { gql, useQuery, useMutation } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
     Alert,
     Button,
@@ -9,36 +14,6 @@ import {
     Row,
     Stack,
 } from 'react-bootstrap';
-
-const GET_EXECUTOR = gql`
-    query selfExecutorProfile {
-        selfExecutorProfile {
-            fullName
-            workExperience
-            educationTypeID
-            specialization
-        }
-    }
-`;
-
-const GET_EDUCATION_AND_SPECIALITIES = gql`
-    query getEducationAndSpecialities {
-        specialities {
-            id
-            title
-        }
-        educationTypes {
-            id
-            title
-        }
-    }
-`;
-
-const SET_EXECUTOR = gql`
-    mutation setExecutorProfile($data: SetExecutorProfileData!) {
-        setExecutorProfile(data: $data)
-    }
-`;
 
 export const ExecutorProfile: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
@@ -81,16 +56,6 @@ export const ExecutorProfile: React.FC = () => {
         },
     });
 
-    useEffect(() => {
-        console.log({
-            what: 'data changed',
-            fullName: fullName,
-            experience: experience,
-            education: education,
-            specialities: specialities,
-        });
-    }, [fullName, experience, education, specialities]);
-
     useQuery(GET_EDUCATION_AND_SPECIALITIES, {
         onError: (error) => {
             setSuccess(null);
@@ -106,15 +71,7 @@ export const ExecutorProfile: React.FC = () => {
         setSuccess(null);
         setError(null);
         event.preventDefault();
-        console.log({
-            what: 'form submit',
-            fullName: fullName,
-            experience: experience,
-            education: education,
-            specialities: specialities,
-        });
         setExecutor();
-        // Handle form submission logic here
     };
 
     if (error) {
