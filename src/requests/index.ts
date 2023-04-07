@@ -55,3 +55,9 @@ export const SIGNUP_MUTATION = gql`
         signup(email: $email, role: $role, debug: $debug)
     }
 `;
+
+export const CREATE_SEARCH = gql`
+    mutation createSearch($data: CreateSearchInput!) {
+        createSearch(data: $data)
+    }
+`;

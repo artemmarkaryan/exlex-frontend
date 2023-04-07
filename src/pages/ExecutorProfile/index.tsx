@@ -3,7 +3,10 @@ import {
     GET_EXECUTOR,
     SET_EXECUTOR,
 } from '@/requests';
+import { EducationType } from '@/types/education';
+import { Speciality } from '@/types/speciality';
 import { gql, useQuery, useMutation } from '@apollo/client';
+
 import React, { useState } from 'react';
 import {
     Alert,
@@ -19,17 +22,17 @@ export const ExecutorProfile: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const [educationDict, setEducationDict] = useState<string[]>([]);
-    const [specialitiesDict, setSpecialitiesDict] = useState<string[]>([]);
+    const [educationDict, setEducationDict] = useState<EducationType[]>([]);
+    const [specialitiesDict, setSpecialitiesDict] = useState<Speciality[]>([]);
 
     const [fullName, setFullName] = useState<string>('');
     const [experience, setExperience] = useState<number>(0);
     const [education, setEducation] = useState<string | null>(null);
-    const [specialities, setSpecialities] = useState([]);
+    const [specialities, setSpecialities] = useState<string[]>([]);
 
     useQuery(GET_EXECUTOR, {
-        onError: (error) => setError('get executor: ' + error.message),
-        onCompleted: (data) => {
+        onError: (error: any) => setError('get executor: ' + error.message),
+        onCompleted: (data: any) => {
             const profile = data.selfExecutorProfile;
             setFullName(profile.fullName);
             setExperience(profile.workExperience);
@@ -47,7 +50,7 @@ export const ExecutorProfile: React.FC = () => {
                 specialization: specialities ? specialities : [],
             },
         },
-        onError: (error) => {
+        onError: (error: any) => {
             setSuccess(null);
             setError('set executor: ' + error.message);
         },
@@ -57,11 +60,11 @@ export const ExecutorProfile: React.FC = () => {
     });
 
     useQuery(GET_EDUCATION_AND_SPECIALITIES, {
-        onError: (error) => {
+        onError: (error: any) => {
             setSuccess(null);
             setError('get education and specialities: ' + error.message);
         },
-        onCompleted: (data) => {
+        onCompleted: (data: any) => {
             setEducationDict(data.educationTypes);
             setSpecialitiesDict(data.specialities);
         },
@@ -73,10 +76,6 @@ export const ExecutorProfile: React.FC = () => {
         event.preventDefault();
         setExecutor();
     };
-
-    if (error) {
-        return <Alert variant="danger">{error}</Alert>;
-    }
 
     return (
         <Container>
@@ -160,6 +159,7 @@ export const ExecutorProfile: React.FC = () => {
             <Row>
                 <Col>
                     {success && <Alert variant="success">{success}</Alert>}
+                    {error && <Alert variant="danger">{error}</Alert>}
                 </Col>
             </Row>
         </Container>
