@@ -55,6 +55,7 @@ const NavigationContent = () => {
         return (
             <>
                 <Nav.Link href="/customer/profile">Профиль</Nav.Link>
+                <Nav.Link href="/customer/searches">Мои поиски</Nav.Link>
                 <Nav.Link href="/customer/search/new">Создать поиск</Nav.Link>
                 <Logout />
             </>

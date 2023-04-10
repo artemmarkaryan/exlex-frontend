@@ -61,3 +61,24 @@ export const CREATE_SEARCH = gql`
         createSearch(data: $data)
     }
 `;
+
+export const GET_SEARCHES = gql`
+    query searches {
+        searches {
+            title
+            description
+            price
+            createdAt
+            deadline {
+                year
+                month
+                day
+            }
+            requirements {
+                educationType
+                speciality
+                workExperience
+            }
+        }
+    }
+`;

@@ -20,14 +20,10 @@ const CreateSearch = () => {
     const [deadline, setDeadline] = useState<string | null>(null);
     const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
     useEffect(() => {
-        console.log(deadline);
         if (deadline == null) {
             return;
         }
-
         const date = new Date(deadline);
-        console.log(date);
-
         setDeadlineDate(new Date(date));
     }, [deadline]);
 

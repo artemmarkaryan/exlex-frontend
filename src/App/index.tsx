@@ -1,6 +1,10 @@
 import React, { useMemo, useRef } from 'react';
 
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import {
+    BrowserRouter as Router,
+    Route,
+    Routes as ReactRoutes,
+} from 'react-router-dom';
 import { Navigation } from '@/components/Navbar';
 import { LoginPage } from '@/pages/Login';
 import { SignupPage } from '@/pages/Signup';
@@ -17,26 +21,33 @@ import { useAtom } from 'jotai';
 import { tokenAtom } from '@/stores/auth';
 import { ExecutorProfile } from '@/pages/ExecutorProfile';
 import { CustomerSearch } from '@/pages/CustomerNewSearch';
+import { CustomerSearches } from '@/pages/CustomerSearches';
 
 const httpLink = createHttpLink({
     uri: 'http://localhost:8079/query',
 });
 
+const Routes = () => {
+    return (
+        <ReactRoutes>
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+
+            <Route path="/customer/profile" element={<CustomerProfile />} />
+            <Route path="/customer/search/new" element={<CustomerSearch />} />
+            <Route path="/customer/searches" element={<CustomerSearches />} />
+
+            <Route path="/executor/profile" element={<ExecutorProfile />} />
+        </ReactRoutes>
+    );
+};
+
 const AppRoutes = React.memo(() => {
     return (
         <Router>
             <Navigation />
-            <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/signup" element={<SignupPage />} />
-                <Route path="/customer/profile" element={<CustomerProfile />} />
-                <Route
-                    path="/customer/search/new"
-                    element={<CustomerSearch />}
-                />
-                <Route path="/executor/profile" element={<ExecutorProfile />} />
-            </Routes>
+            <Routes />
         </Router>
     );
 });
