@@ -65,6 +65,7 @@ export const CREATE_SEARCH = gql`
 export const GET_SEARCHES = gql`
     query searches {
         searches {
+            id
             title
             description
             price
@@ -80,5 +81,11 @@ export const GET_SEARCHES = gql`
                 workExperience
             }
         }
+    }
+`;
+
+export const DELETE_SEARCH = gql`
+    mutation deleteSearch($id: ID!) {
+        deleteSearch(id: $id)
     }
 `;
