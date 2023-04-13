@@ -1,8 +1,4 @@
-import {
-    DELETE_SEARCH,
-    GET_EDUCATION_AND_SPECIALITIES,
-    GET_CUSTOMER_SEARCHES,
-} from '@/requests';
+import { APPLY, GET_EXECUTOR_SEARCHES } from '@/requests';
 import { EducationType } from '@/types/education';
 import { Search } from '@/types/search';
 import { Speciality } from '@/types/speciality';
@@ -61,17 +57,15 @@ const SearchCard = (props: {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    const [deleteSearch] = useMutation(DELETE_SEARCH, {
-        onCompleted: (data: any) => {
-            setSuccess('Поиск удалён');
-            setHidden(true);
-        },
-        onError: (error: any) => {
-            setError('dailed to delete: ' + error.message);
-        },
+    const [apply] = useMutation(APPLY, {
+        onError: (e: Error) =>
+            setError('Ошибка при отправке отклика: ' + e.message),
     });
 
-    const [hidden, setHidden] = useState(false);
+    const applyForSearch = (searchID: string) => {
+        apply({ variables: { searchID: searchID } });
+        setSuccess('Отклик отправлен');
+    };
 
     return (
         <Col className="col-12 col-lg-6">
@@ -92,12 +86,12 @@ const SearchCard = (props: {
                 </ul>
 
                 <Button
-                    onClick={() => deleteSearch({ variables: { id: s.id } })}
+                    onClick={() => applyForSearch(s.id)}
                     className="col-3 mt-3 mb-3"
-                    variant="danger"
-                    disabled={hidden}
+                    variant="primary"
+                    disabled={!!success}
                 >
-                    Удалить
+                    Откликнуться
                 </Button>
 
                 {success && <Alert variant="success">{success}</Alert>}
@@ -107,8 +101,8 @@ const SearchCard = (props: {
     );
 };
 
-export const CustomerSearches = () => {
-    const { error, loading, data } = useQuery(GET_CUSTOMER_SEARCHES);
+export const ExecutorSearches = () => {
+    const { error, loading, data } = useQuery(GET_EXECUTOR_SEARCHES);
 
     if (loading)
         return (
@@ -130,13 +124,13 @@ export const CustomerSearches = () => {
 
     return (
         <Container>
-            {data.customerSearches.length > 0 ? (
+            {data.executorAvailableSearches.length > 0 ? (
                 <>
                     <Row className="mb-3">
                         <h1>Поиски</h1>
                     </Row>
                     <Row>
-                        {data.customerSearches.map((s: Search) => {
+                        {data.executorAvailableSearches.map((s: Search) => {
                             return (
                                 <SearchCard
                                     key={'search-card-' + s.id}
@@ -150,20 +144,11 @@ export const CustomerSearches = () => {
                 </>
             ) : (
                 <Row>
-                    <Col className="xs-12"></Col>
-                    <h1 className="mb-5">
-                        Вы пока не создали ни одного поиска
+                    <h1>
+                        🙁 Увы!
+                        <br />
+                        Сейчас для вас нет доступных поисков
                     </h1>
-
-                    <Col>
-                        <Button
-                            variant="primary"
-                            as="a"
-                            href="/customer/search/new"
-                        >
-                            Создать новый поиск
-                        </Button>
-                    </Col>
                 </Row>
             )}
         </Container>

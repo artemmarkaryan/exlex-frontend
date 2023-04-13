@@ -65,6 +65,7 @@ const NavigationContent = () => {
         return (
             <>
                 <Nav.Link href="/executor/profile">Профиль</Nav.Link>
+                <Nav.Link href="/executor/searches">Поиски</Nav.Link>
                 <Logout />
             </>
         );

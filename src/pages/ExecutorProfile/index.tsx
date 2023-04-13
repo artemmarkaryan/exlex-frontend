@@ -1,8 +1,4 @@
-import {
-    GET_EDUCATION_AND_SPECIALITIES,
-    GET_EXECUTOR,
-    SET_EXECUTOR,
-} from '@/requests';
+import { GET_EXECUTOR, SET_EXECUTOR } from '@/requests';
 import { EducationType } from '@/types/education';
 import { Speciality } from '@/types/speciality';
 import { gql, useQuery, useMutation } from '@apollo/client';
@@ -38,6 +34,8 @@ export const ExecutorProfile: React.FC = () => {
             setExperience(profile.workExperience);
             setEducation(profile.educationTypeID);
             setSpecialities(profile.specialization);
+            setEducationDict(data.educationTypes);
+            setSpecialitiesDict(data.specialities);
         },
     });
 
@@ -56,17 +54,6 @@ export const ExecutorProfile: React.FC = () => {
         },
         onCompleted: () => {
             setSuccess('Данные обновлены');
-        },
-    });
-
-    useQuery(GET_EDUCATION_AND_SPECIALITIES, {
-        onError: (error: any) => {
-            setSuccess(null);
-            setError('get education and specialities: ' + error.message);
-        },
-        onCompleted: (data: any) => {
-            setEducationDict(data.educationTypes);
-            setSpecialitiesDict(data.specialities);
         },
     });
 

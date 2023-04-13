@@ -14,6 +14,14 @@ export const GET_EXECUTOR = gql`
             educationTypeID
             specialization
         }
+        specialities {
+            id
+            title
+        }
+        educationTypes {
+            id
+            title
+        }
     }
 `;
 
@@ -62,9 +70,39 @@ export const CREATE_SEARCH = gql`
     }
 `;
 
-export const GET_SEARCHES = gql`
+export const GET_CUSTOMER_SEARCHES = gql`
     query searches {
-        searches {
+        customerSearches {
+            id
+            title
+            description
+            price
+            createdAt
+            deadline {
+                year
+                month
+                day
+            }
+            requirements {
+                educationType
+                speciality
+                workExperience
+            }
+        }
+        educationTypes {
+            id
+            title
+        }
+        specialities {
+            id
+            title
+        }
+    }
+`;
+
+export const GET_EXECUTOR_SEARCHES = gql`
+    query searches {
+        executorAvailableSearches {
             id
             title
             description
@@ -95,5 +133,11 @@ export const GET_SEARCHES = gql`
 export const DELETE_SEARCH = gql`
     mutation deleteSearch($id: ID!) {
         deleteSearch(id: $id)
+    }
+`;
+
+export const APPLY = gql`
+    mutation applyForSearch($searchID: ID!, $comment: String) {
+        applyForSearch(searchID: $searchID, comment: $comment)
     }
 `;

@@ -22,6 +22,7 @@ import { tokenAtom } from '@/stores/auth';
 import { ExecutorProfile } from '@/pages/ExecutorProfile';
 import { CustomerSearch } from '@/pages/CustomerNewSearch';
 import { CustomerSearches } from '@/pages/CustomerSearches';
+import { ExecutorSearches } from '@/pages/ExecutorSearches';
 
 const httpLink = createHttpLink({
     uri: 'http://0.0.0.0:8079/query',
@@ -39,6 +40,7 @@ const Routes = () => {
             <Route path="/customer/searches" element={<CustomerSearches />} />
 
             <Route path="/executor/profile" element={<ExecutorProfile />} />
+            <Route path="/executor/SEARCHES" element={<ExecutorSearches />} />
         </ReactRoutes>
     );
 };
