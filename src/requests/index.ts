@@ -81,6 +81,14 @@ export const GET_SEARCHES = gql`
                 workExperience
             }
         }
+        educationTypes {
+            id
+            title
+        }
+        specialities {
+            id
+            title
+        }
     }
 `;
 

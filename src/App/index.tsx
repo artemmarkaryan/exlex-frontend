@@ -24,7 +24,7 @@ import { CustomerSearch } from '@/pages/CustomerNewSearch';
 import { CustomerSearches } from '@/pages/CustomerSearches';
 
 const httpLink = createHttpLink({
-    uri: 'http://localhost:8079/query',
+    uri: 'http://0.0.0.0:8079/query',
 });
 
 const Routes = () => {

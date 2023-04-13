@@ -7,7 +7,7 @@ import { EducationType } from '@/types/education';
 import { Search } from '@/types/search';
 import { Speciality } from '@/types/speciality';
 import { useMutation, useQuery } from '@apollo/client';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -24,26 +24,40 @@ const SearchCard = (props: {
     specialities: Speciality[];
     search: Search;
 }) => {
+    console.log('rendering search card' + props.search.id);
     const s = props.search;
     const d = new Date(s.createdAt);
 
-    const educations: JSX.Element[] = Object.values(
-        s.requirements.educationType,
-    ).map((requiredEducation: string) => {
-        const et = props.educations.find((element: EducationType) => {
-            return element.id === requiredEducation;
-        });
-        return <li key={et?.id}>{et ? et.title : ''}</li>;
-    });
+    const [educations, setEducations] = useState<JSX.Element[]>([]);
+    const [specialities, setSpecialities] = useState<JSX.Element[]>([]);
 
-    const specialities: JSX.Element[] = Object.values(
-        s.requirements.speciality,
-    ).map((requiredSpeciality: string) => {
-        const s = props.specialities.find((element: Speciality) => {
-            return element.id === requiredSpeciality;
-        });
-        return <li key={s?.id}>{s ? s.title : ''}</li>;
-    });
+    useEffect(() => {
+        setEducations(
+            s.requirements.educationType.map((requiredEducation: string) => {
+                const et = props.educations.find((element: EducationType) => {
+                    return element.id === requiredEducation;
+                });
+                return et ? (
+                    <li key={props.search.id + '-' + et.id}>{et.title}</li>
+                ) : (
+                    <></>
+                );
+            }),
+        );
+        setSpecialities(
+            s.requirements.speciality.map((requiredSpeciality: string) => {
+                const s = props.specialities.find((element: Speciality) => {
+                    return element.id === requiredSpeciality;
+                });
+
+                return s ? (
+                    <li key={props.search.id + '-' + s.id}>{s.title}</li>
+                ) : (
+                    <></>
+                );
+            }),
+        );
+    }, [props]);
 
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
@@ -59,96 +73,83 @@ const SearchCard = (props: {
 
     const [hidden, setHidden] = useState(false);
 
-    if (!hidden)
-        return (
-            <Col className="col-12 col-lg-6">
-                <Card className="p-4 custom-card">
-                    <h3 className="mb-4">{s.title ? s.title : 'Безымянный'}</h3>
-                    <p>{s.description}</p>
-                    <p>Вознаграждение: {s.price}р.</p>
-                    <p>Создан: {d.toLocaleString('ru-RU')}</p>
+    return hidden ? (
+        <></>
+    ) : (
+        <Col className="col-12 col-lg-6">
+            <Card className="p-4 custom-card" id={s.id}>
+                <h3 className="mb-4">{s.title ? s.title : 'Безымянный'}</h3>
+                <p>{s.description}</p>
+                <p>Вознаграждение: {s.price}р.</p>
+                <p>Создан: {d.toLocaleString('ru-RU')}</p>
 
-                    <b>Требования</b>
-                    <p className="mb-0">Образование:</p>
-                    <ul>
-                        {educations.length > 0 ? educations : <li>Любое</li>}
-                    </ul>
-                    <p className="mb-0">Специальность</p>
-                    <ul>
-                        {specialities.length > 0 ? (
-                            specialities
-                        ) : (
-                            <li>Любая</li>
-                        )}
-                    </ul>
+                <b className="mb-3">Требования</b>
+                <p>Опыт работы: {s.requirements.workExperience}</p>
 
-                    <Button
-                        onClick={() => {
-                            deleteSearch({ variables: { id: s.id } });
-                            setInterval(() => {
-                                setHidden(true);
-                            }, 2000);
-                        }}
-                        className="col-3 mt-3 mb-3"
-                        variant="danger"
-                    >
-                        Удалить
-                    </Button>
+                <p className="mb-0">Образование:</p>
+                <ul>{educations.length > 0 ? educations : <li>Любое</li>}</ul>
+                <p className="mb-0">Специальность</p>
+                <ul>
+                    {specialities.length > 0 ? specialities : <li>Любая</li>}
+                </ul>
 
-                    {success && <Alert variant="success">{success}</Alert>}
-                    {error && <Alert variant="danger">{error}</Alert>}
-                </Card>
-            </Col>
-        );
-};
+                <Button
+                    onClick={() => {
+                        deleteSearch({ variables: { id: s.id } });
+                        setInterval(() => {
+                            setHidden(true);
+                        }, 2000);
+                    }}
+                    className="col-3 mt-3 mb-3"
+                    variant="danger"
+                >
+                    Удалить
+                </Button>
 
-const Content = () => {
-    const [error, setError] = useState<string | null>(null);
-    const [educationDict, setEducationDict] = useState<EducationType[]>([]);
-    const [specialitiesDict, setSpecialitiesDict] = useState<Speciality[]>([]);
-    const [searches, setSearches] = useState<Search[]>([]);
-    useQuery(GET_SEARCHES, {
-        onError: (error: any) => {
-            setError('get searches: ' + error.message);
-        },
-        onCompleted: (data: any) => {
-            setSearches(data.searches);
-        },
-    });
-    useQuery(GET_EDUCATION_AND_SPECIALITIES, {
-        onError: (error: any) => {
-            setError('get education and specialities: ' + error.message);
-        },
-        onCompleted: (data: any) => {
-            setEducationDict(data.educationTypes);
-            setSpecialitiesDict(data.specialities);
-        },
-    });
-
-    return (
-        <>
-            {Object.values(searches).map((s: Search) => {
-                return (
-                    <SearchCard
-                        key={s.id}
-                        educations={educationDict}
-                        specialities={specialitiesDict}
-                        search={s}
-                    />
-                );
-            })}
-        </>
+                {success && <Alert variant="success">{success}</Alert>}
+                {error && <Alert variant="danger">{error}</Alert>}
+            </Card>
+        </Col>
     );
 };
 
 export const CustomerSearches = () => {
+    const { error, loading, data } = useQuery(GET_SEARCHES);
+
+    if (loading)
+        return (
+            <Container>
+                <Row>
+                    <p>Загрузка...</p>
+                </Row>
+            </Container>
+        );
+
+    if (error)
+        return (
+            <Container>
+                <Row>
+                    <Alert variant="danger">{error.message}</Alert>
+                </Row>
+            </Container>
+        );
+
     return (
         <Container>
             <Row className="mb-3">
                 <h1>Поиски</h1>
             </Row>
             <Row>
-                <Content />
+                {data.searches.map((s: Search) => {
+                    return (
+                        <SearchCard
+                            key={'search-card-' + s.id}
+                            educations={data.educationTypes}
+                            specialities={data.specialities}
+                            search={s}
+                        />
+                    );
+                })}
             </Row>
         </Container>
     );
