@@ -13,7 +13,6 @@ import {
     Row,
     Stack,
 } from 'react-bootstrap';
-import './styles.css';
 
 const SearchCard = (props: {
     educations: EducationType[];

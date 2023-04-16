@@ -1,23 +1,11 @@
-import {
-    DELETE_SEARCH,
-    GET_EDUCATION_AND_SPECIALITIES,
-    GET_CUSTOMER_SEARCHES,
-} from '@/requests';
+import { DELETE_SEARCH, GET_CUSTOMER_SEARCHES } from '@/requests';
 import { EducationType } from '@/types/education';
 import { Search } from '@/types/search';
 import { Speciality } from '@/types/speciality';
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import {
-    Alert,
-    Button,
-    Card,
-    Col,
-    Container,
-    Row,
-    Stack,
-} from 'react-bootstrap';
-import './styles.css';
+import { Alert, Button, Card, Col, Container, Row } from 'react-bootstrap';
+import { titles } from '@/util/titles';
 
 const SearchCard = (props: {
     educations: EducationType[];
@@ -27,34 +15,15 @@ const SearchCard = (props: {
     const s = props.search;
     const d = new Date(s.createdAt);
 
-    const [educations, setEducations] = useState<JSX.Element[]>([]);
-    const [specialities, setSpecialities] = useState<JSX.Element[]>([]);
+    const [educationTitles, setEducationTitles] = useState<string[]>([]);
+    const [specialityTitles, setSpecialityTitles] = useState<string[]>([]);
 
     useEffect(() => {
-        setEducations(
-            s.requirements.educationType.map((requiredEducation: string) => {
-                const et = props.educations.find((element: EducationType) => {
-                    return element.id === requiredEducation;
-                });
-                return et ? (
-                    <li key={props.search.id + '-' + et.id}>{et.title}</li>
-                ) : (
-                    <></>
-                );
-            }),
+        setEducationTitles(
+            titles(s.requirements.educationType, props.educations),
         );
-        setSpecialities(
-            s.requirements.speciality.map((requiredSpeciality: string) => {
-                const s = props.specialities.find((element: Speciality) => {
-                    return element.id === requiredSpeciality;
-                });
-
-                return s ? (
-                    <li key={props.search.id + '-' + s.id}>{s.title}</li>
-                ) : (
-                    <></>
-                );
-            }),
+        setSpecialityTitles(
+            titles(s.requirements.speciality, props.specialities),
         );
     }, [props]);
 
@@ -75,8 +44,12 @@ const SearchCard = (props: {
 
     return (
         <Col className="col-12 col-lg-6">
-            <Card className="p-4 custom-card" id={s.id}>
-                <h3 className="mb-4">{s.title ? s.title : 'Безымянный'}</h3>
+            <Card className="custom-card">
+                <h3 className="mb-4">
+                    <a href={'/customer/search/' + s.id}>
+                        {s.title ? s.title : 'Безымянный'}
+                    </a>
+                </h3>
                 <p>{s.description}</p>
                 <p>Вознаграждение: {s.price}р.</p>
                 <p>Создан: {d.toLocaleString('ru-RU')}</p>
@@ -85,10 +58,12 @@ const SearchCard = (props: {
                 <p>Опыт работы: {s.requirements.workExperience}</p>
 
                 <p className="mb-0">Образование:</p>
-                <ul>{educations.length > 0 ? educations : <li>Любое</li>}</ul>
+                <ul>
+                    {educationTitles.length > 0 ? educationTitles : 'Любое'}
+                </ul>
                 <p className="mb-0">Специальность</p>
                 <ul>
-                    {specialities.length > 0 ? specialities : <li>Любая</li>}
+                    {specialityTitles.length > 0 ? specialityTitles : 'Любая'}
                 </ul>
 
                 <Button

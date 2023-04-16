@@ -1,5 +1,4 @@
 import React, { useMemo, useRef } from 'react';
-
 import {
     BrowserRouter as Router,
     Route,
@@ -20,9 +19,11 @@ import { CustomerProfile } from '@/pages/CustomerProfile';
 import { useAtom } from 'jotai';
 import { tokenAtom } from '@/stores/auth';
 import { ExecutorProfile } from '@/pages/ExecutorProfile';
-import { CustomerSearch } from '@/pages/CustomerNewSearch';
+import { CustomerNewSearch } from '@/pages/CustomerNewSearch';
 import { CustomerSearches } from '@/pages/CustomerSearches';
 import { ExecutorSearches } from '@/pages/ExecutorSearches';
+import { CustomerSearch } from '@/pages/CustomerSearch';
+import './styles.css';
 
 const httpLink = createHttpLink({
     uri: 'http://0.0.0.0:8079/query',
@@ -36,8 +37,12 @@ const Routes = () => {
             <Route path="/signup" element={<SignupPage />} />
 
             <Route path="/customer/profile" element={<CustomerProfile />} />
-            <Route path="/customer/search/new" element={<CustomerSearch />} />
+            <Route
+                path="/customer/search/new"
+                element={<CustomerNewSearch />}
+            />
             <Route path="/customer/searches" element={<CustomerSearches />} />
+            <Route path="/customer/search/:id" element={<CustomerSearch />} />
 
             <Route path="/executor/profile" element={<ExecutorProfile />} />
             <Route path="/executor/SEARCHES" element={<ExecutorSearches />} />

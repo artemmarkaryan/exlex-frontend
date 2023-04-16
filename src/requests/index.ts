@@ -141,3 +141,41 @@ export const APPLY = gql`
         applyForSearch(searchID: $searchID, comment: $comment)
     }
 `;
+
+export const GET_CUSTOMER_SEARCH = gql`
+    query customerSearch($id: ID!) {
+        customerSearch(id: $id) {
+            id
+            title
+            description
+            price
+            createdAt
+            deadline {
+                year
+                month
+                day
+            }
+            requirements {
+                educationType
+                speciality
+                workExperience
+            }
+        }
+    }
+`;
+
+export const GET_APPLICANTS = gql`
+    query applications($id: ID!) {
+        customerSearchApplications(id: $id) {
+            id
+            createdAt
+            comment
+            applicant {
+                fullName
+                workExperience
+                educationTypeID
+                specialization
+            }
+        }
+    }
+`;

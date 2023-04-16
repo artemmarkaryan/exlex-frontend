@@ -227,7 +227,7 @@ const CreateSearch = () => {
     );
 };
 
-export const CustomerSearch: React.FC = () => {
+export const CustomerNewSearch: React.FC = () => {
     return (
         <Container>
             <Stack gap={2}>
