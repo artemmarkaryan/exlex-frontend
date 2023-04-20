@@ -1,9 +1,14 @@
-import { GET_EXECUTOR, SET_EXECUTOR } from '@/requests';
+import { Loading } from '@/components/Loading';
+import {
+    GET_EDUCATION_AND_SPECIALITIES,
+    GET_EXECUTOR,
+    SET_EXECUTOR,
+} from '@/requests';
 import { EducationType } from '@/types/education';
 import { Speciality } from '@/types/speciality';
 import { gql, useQuery, useMutation } from '@apollo/client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     Alert,
     Button,
@@ -14,140 +19,181 @@ import {
     Stack,
 } from 'react-bootstrap';
 
-export const ExecutorProfile: React.FC = () => {
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
+interface ExecutorProfile {
+    name: string | null;
+    experience: number;
+    education: string | null;
+    specialities: string[];
+}
+const ProfileForm = (props: {
+    educationTypes: EducationType[];
+    specialities: Speciality[];
+}) => {
+    const [profile, setProfile] = useState({
+        name: null,
+        experience: 0,
+        education: null,
+        specialities: [],
+    } as ExecutorProfile);
 
-    const [educationDict, setEducationDict] = useState<EducationType[]>([]);
-    const [specialitiesDict, setSpecialitiesDict] = useState<Speciality[]>([]);
+    const qResult = useQuery(GET_EXECUTOR);
+    const [setExecutor, mutResult] = useMutation(SET_EXECUTOR);
+    const [successAlertShown, setSuccessAlertShown] = useState(false);
 
-    const [fullName, setFullName] = useState<string>('');
-    const [experience, setExperience] = useState<number>(0);
-    const [education, setEducation] = useState<string | null>(null);
-    const [specialities, setSpecialities] = useState<string[]>([]);
-
-    useQuery(GET_EXECUTOR, {
-        onError: (error: any) => setError('get executor: ' + error.message),
-        onCompleted: (data: any) => {
-            const profile = data.selfExecutorProfile;
-            setFullName(profile.fullName);
-            setExperience(profile.workExperience);
-            setEducation(profile.educationTypeID);
-            setSpecialities(profile.specialization);
-            setEducationDict(data.educationTypes);
-            setSpecialitiesDict(data.specialities);
-        },
-    });
-
-    const [setExecutor] = useMutation(SET_EXECUTOR, {
-        variables: {
-            data: {
-                fullName: fullName,
-                workExperience: experience,
-                educationTypeID: education ? education : '',
-                specialization: specialities ? specialities : [],
-            },
-        },
-        onError: (error: any) => {
-            setSuccess(null);
-            setError('set executor: ' + error.message);
-        },
-        onCompleted: () => {
-            setSuccess('Данные обновлены');
-        },
-    });
+    useEffect(() => {
+        if (!qResult.data) return;
+        setProfile({
+            name: qResult.data.selfExecutorProfile.fullName,
+            experience: qResult.data.selfExecutorProfile.workExperience,
+            education: qResult.data.selfExecutorProfile.educationTypeID,
+            specialities: qResult.data.selfExecutorProfile.specialization,
+        });
+    }, [qResult]);
 
     const handleFormSubmit = (event: any) => {
-        setSuccess(null);
-        setError(null);
         event.preventDefault();
-        setExecutor();
+        setSuccessAlertShown(true);
+        setInterval(() => setSuccessAlertShown(false), 3000);
+        setExecutor({
+            variables: {
+                data: {
+                    fullName: profile.name,
+                    workExperience: profile.experience,
+                    educationTypeID: profile.education ? profile.education : '',
+                    specialization: profile.specialities,
+                },
+            },
+        });
     };
 
+    useEffect(() => {
+        console.log(profile);
+    }, [profile]);
+
+    if (qResult.loading) return <Loading />;
+    if (qResult.error)
+        return <Alert variant="danger">Ошибка: {qResult.error.message}</Alert>;
+
+    return (
+        <>
+            <Form onSubmit={handleFormSubmit} className="mb-3">
+                <Stack gap={2} className="mb-3">
+                    <Form.Group controlId="fullName">
+                        <Form.Label>Полное имя</Form.Label>
+                        <Form.Control
+                            type="text"
+                            value={profile.name ? profile.name : ''}
+                            onChange={(e) =>
+                                setProfile({ ...profile, name: e.target.value })
+                            }
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="experience">
+                        <Form.Label>Опыт работы (лет)</Form.Label>
+                        <Form.Control
+                            type="number"
+                            value={profile.experience}
+                            onChange={(e) =>
+                                setProfile({
+                                    ...profile,
+                                    experience: +e.target.value,
+                                })
+                            }
+                        />
+                    </Form.Group>
+
+                    <Form.Group controlId="education">
+                        <Form.Label>Образование</Form.Label>
+                        <Form.Control
+                            as="select"
+                            type="text"
+                            value={profile.education ? profile.education : ''}
+                            onChange={(e) =>
+                                setProfile({
+                                    ...profile,
+                                    education: e.target.value,
+                                })
+                            }
+                        >
+                            <option value={'undefined'}>Не выбрано</option>
+                            {props.educationTypes.map((e) => (
+                                <option key={e.id} value={e.id}>
+                                    {e.title}
+                                </option>
+                            ))}
+                        </Form.Control>
+                    </Form.Group>
+
+                    <Form.Group controlId="specialities">
+                        <Form.Label>Специализация</Form.Label>
+                        {props.specialities.map((s) => (
+                            <Form.Check
+                                type="checkbox"
+                                id={s.id}
+                                key={s.id}
+                                label={s.title}
+                                checked={profile.specialities?.includes(s.id)}
+                                onChange={(event) => {
+                                    if (event.target.checked) {
+                                        setProfile({
+                                            ...profile,
+                                            specialities: [
+                                                ...profile.specialities,
+                                                s.id,
+                                            ],
+                                        });
+                                    } else {
+                                        setProfile({
+                                            ...profile,
+                                            specialities:
+                                                profile.specialities.filter(
+                                                    (id) => id !== s.id,
+                                                ),
+                                        });
+                                    }
+                                }}
+                            />
+                        ))}
+                    </Form.Group>
+                </Stack>
+
+                <Button variant="primary" type="submit">
+                    Сохранить
+                </Button>
+            </Form>
+
+            {successAlertShown && !mutResult.error && (
+                <Alert variant="success">Данные обновлены</Alert>
+            )}
+            {mutResult.error && (
+                <Alert variant="danger">{mutResult.error.message}</Alert>
+            )}
+        </>
+    );
+};
+
+const Content = () => {
+    const { loading, error, data } = useQuery(GET_EDUCATION_AND_SPECIALITIES);
+
+    if (loading) return <Loading />;
+    if (error) return <Alert variant="danger">Ошибка: {error.message}</Alert>;
+    return (
+        <ProfileForm
+            educationTypes={data.educationTypes}
+            specialities={data.specialities}
+        />
+    );
+};
+
+export const ExecutorProfile = () => {
     return (
         <Container>
             <Row>
                 <h1>Профиль</h1>
             </Row>
             <Row>
-                <Form onSubmit={handleFormSubmit} className="mb-3">
-                    <Stack gap={2} className="mb-3">
-                        <Form.Group controlId="fullName">
-                            <Form.Label>Полное имя</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={fullName}
-                                onChange={(e) => setFullName(e.target.value)}
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="experience">
-                            <Form.Label>Опыт работы (лет)</Form.Label>
-                            <Form.Control
-                                type="number"
-                                value={experience}
-                                onChange={(e) => setExperience(+e.target.value)}
-                            />
-                        </Form.Group>
-
-                        <Form.Group controlId="education">
-                            <Form.Label>Образование</Form.Label>
-                            <Form.Control
-                                as="select"
-                                type="text"
-                                value={education ? education : ''}
-                                onChange={(e) => setEducation(e.target.value)}
-                            >
-                                <option value={'unspecified'}>
-                                    Не выбрано
-                                </option>
-                                {Object.values(educationDict).map((e) => (
-                                    <option key={e.id} value={e.id}>
-                                        {e.title}
-                                    </option>
-                                ))}
-                            </Form.Control>
-                        </Form.Group>
-
-                        <Form.Group controlId="specialities">
-                            <Form.Label>Специализация</Form.Label>
-                            {Object.values(specialitiesDict).map((s) => (
-                                <Form.Check
-                                    type="checkbox"
-                                    id={s.id}
-                                    key={s.id}
-                                    label={s.title}
-                                    checked={specialities.includes(s.id)}
-                                    onChange={(event) => {
-                                        if (event.target.checked) {
-                                            setSpecialities([
-                                                ...specialities,
-                                                s.id,
-                                            ]);
-                                        } else {
-                                            setSpecialities(
-                                                specialities.filter(
-                                                    (id) => id !== s.id,
-                                                ),
-                                            );
-                                        }
-                                    }}
-                                />
-                            ))}
-                        </Form.Group>
-                    </Stack>
-
-                    <Button variant="primary" type="submit">
-                        Сохранить
-                    </Button>
-                </Form>
-            </Row>
-
-            <Row>
-                <Col>
-                    {success && <Alert variant="success">{success}</Alert>}
-                    {error && <Alert variant="danger">{error}</Alert>}
-                </Col>
+                <Content />
             </Row>
         </Container>
     );

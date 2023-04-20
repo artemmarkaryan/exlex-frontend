@@ -11,6 +11,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import {
     Alert,
+    Badge,
     Button,
     Card,
     Col,
@@ -67,7 +68,9 @@ const SearchContent = (props: {
                 </h1>
                 <p>{search.description}</p>
                 <p>Вознаграждение: {search.price}р.</p>
-                <p>Создан: {search.createdAt.toLocaleString()}</p>
+                <p>
+                    Создан: {new Date(search.createdAt).toLocaleString('ru-RU')}
+                </p>
 
                 <b className="mb-3">Требования</b>
                 <p>Опыт работы: {search.requirements.workExperience}</p>
@@ -182,10 +185,14 @@ const Applications = (props: {
 
     if (loading) return <Loading />;
     if (error) return <Alert variant="danger">Ошибка: {error.message}</Alert>;
-    if (data.length === 0) return <></>;
     return (
         <>
-            <h2 className="mb-4">Отклики</h2>
+            <h2 className="mb-4">
+                Отклики{' '}
+                <Badge bg="secondary">
+                    {data.customerSearchApplications.length}
+                </Badge>
+            </h2>
             <Stack gap={3}>
                 {data.customerSearchApplications.map((o: IApplication) => {
                     return (
@@ -209,18 +216,16 @@ const Content = () => {
     if (loading) return <Loading />;
     if (error) return <Alert variant="danger">Ошибка: {error.message}</Alert>;
     return (
-        <Container>
-            <Row>
-                <Stack gap={3}>
-                    <Col xs={12}>
-                        <SearchContent searchID={id} dicts={data} />
-                    </Col>
-                    <Col xs={12}>
-                        <Applications searchID={id} dicts={data} />
-                    </Col>
-                </Stack>
-            </Row>
-        </Container>
+        <Row>
+            <Stack gap={3}>
+                <Col xs={12}>
+                    <SearchContent searchID={id} dicts={data} />
+                </Col>
+                <Col xs={12}>
+                    <Applications searchID={id} dicts={data} />
+                </Col>
+            </Stack>
+        </Row>
     );
 };
 

@@ -14,14 +14,6 @@ export const GET_EXECUTOR = gql`
             educationTypeID
             specialization
         }
-        specialities {
-            id
-            title
-        }
-        educationTypes {
-            id
-            title
-        }
     }
 `;
 
