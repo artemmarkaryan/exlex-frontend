@@ -66,10 +66,6 @@ const ProfileForm = (props: {
         });
     };
 
-    useEffect(() => {
-        console.log(profile);
-    }, [profile]);
-
     if (qResult.loading) return <Loading />;
     if (qResult.error)
         return <Alert variant="danger">Ошибка: {qResult.error.message}</Alert>;
