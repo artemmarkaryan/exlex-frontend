@@ -1,3 +1,4 @@
+import { Loading } from '@/components/Loading';
 import { CREATE_SEARCH, GET_EDUCATION_AND_SPECIALITIES } from '@/requests';
 import { EducationType } from '@/types/education';
 import { Speciality } from '@/types/speciality';
@@ -13,71 +14,63 @@ import {
     Stack,
 } from 'react-bootstrap';
 
-const CreateSearch = () => {
-    const [title, setTitle] = useState<string | null>(null);
-    const [description, setDescription] = useState<string | null>(null);
-    const [price, setPrice] = useState<number>(0);
+interface Search {
+    title: string | null;
+    description: string | null;
+    price: number;
+    deadline: Date | null;
+    experience: number;
+    education: string[];
+    specialities: string[];
+}
+
+const CreateSearch = (props: {
+    educationTypes: EducationType[];
+    specialities: Speciality[];
+}) => {
+    const [search, setSearch] = useState<Search>({
+        title: null,
+        description: null,
+        price: 0,
+        deadline: null,
+        experience: 0,
+        education: [],
+        specialities: [],
+    } as Search);
     const [deadline, setDeadline] = useState<string | null>(null);
-    const [deadlineDate, setDeadlineDate] = useState<Date | null>(null);
+    const [searchID, setSearchID] = useState<string | null>(null);
+
     useEffect(() => {
         if (deadline == null) {
             return;
         }
         const date = new Date(deadline);
-        setDeadlineDate(new Date(date));
+        setSearch({ ...search, deadline: new Date(date) });
     }, [deadline]);
 
-    const [experience, setExperience] = useState<number>(0);
-    const [education, setEducation] = useState<string[]>([]);
-    const [specialities, setSpecialities] = useState<string[]>([]);
-
-    const [educationDict, setEducationDict] = useState<EducationType[]>([]);
-    const [specialitiesDict, setSpecialitiesDict] = useState<Speciality[]>([]);
-
-    const [error, setError] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
-
-    const [searchID, setSearchID] = useState<string | null>(null);
-
-    useQuery(GET_EDUCATION_AND_SPECIALITIES, {
-        onError: (error: any) => {
-            setError('get education and specialities: ' + error.message);
-        },
-        onCompleted: (data: any) => {
-            setEducationDict(data.educationTypes);
-            setSpecialitiesDict(data.specialities);
-        },
-    });
-
-    const [createSearch] = useMutation(CREATE_SEARCH, {
+    const [createSearch, mutResult] = useMutation(CREATE_SEARCH, {
         variables: {
             data: {
-                title: title,
-                description: description,
-                price: price,
+                title: search.title,
+                description: search.description,
+                price: search.price,
                 deadline: {
-                    year: deadlineDate?.getFullYear(),
-                    month: deadlineDate?.getMonth(),
-                    day: deadlineDate?.getDay(),
+                    year: search.deadline?.getFullYear(),
+                    month: search.deadline?.getMonth(),
+                    day: search.deadline?.getDay(),
                 },
                 requirements: {
-                    speciality: specialities,
-                    workExperience: experience,
-                    educationType: education,
+                    speciality: search.specialities,
+                    workExperience: search.experience,
+                    educationType: search.education,
                 },
             },
         },
-        onError: (error: any) => {
-            setError(error.message);
-            setLoading(false);
-        },
-        onCompleted: (data: any) => {
-            setLoading(false);
-            setSearchID(data.createSearch);
-            setError(null);
-        },
-        onLoading: () => setLoading(true),
     });
+
+    useEffect(() => {
+        mutResult.data ? setSearchID(mutResult.data.searchID) : null;
+    }, [mutResult]);
 
     const handle: FormEventHandler<HTMLFormElement> = (e) => {
         e.preventDefault();
@@ -87,15 +80,20 @@ const CreateSearch = () => {
     return (
         <>
             <Form onSubmit={handle}>
-                <fieldset disabled={searchID !== null || loading}>
+                <fieldset disabled={searchID !== null}>
                     <Stack gap={3} className="mb-3">
                         <Form.Group controlId="title">
                             <Form.Label>Название задачи</Form.Label>
                             <Form.Control
                                 required
                                 type="text"
-                                value={title ? title : ''}
-                                onChange={(e) => setTitle(e.target.value)}
+                                value={search.title ? search.title : ''}
+                                onChange={(e) =>
+                                    setSearch({
+                                        ...search,
+                                        title: e.target.value,
+                                    })
+                                }
                             />
                         </Form.Group>
                         <Form.Group controlId="description">
@@ -105,8 +103,15 @@ const CreateSearch = () => {
                                 as="textarea"
                                 rows={2}
                                 type="text"
-                                value={description ? description : ''}
-                                onChange={(e) => setDescription(e.target.value)}
+                                value={
+                                    search.description ? search.description : ''
+                                }
+                                onChange={(e) =>
+                                    setSearch({
+                                        ...search,
+                                        description: e.target.value,
+                                    })
+                                }
                             />
                         </Form.Group>
                     </Stack>
@@ -116,8 +121,13 @@ const CreateSearch = () => {
                                 <Form.Label>Сумма вознаграждения</Form.Label>
                                 <Form.Control
                                     type="price"
-                                    value={price}
-                                    onChange={(e) => setPrice(+e.target.value)}
+                                    value={search.price}
+                                    onChange={(e) =>
+                                        setSearch({
+                                            ...search,
+                                            price: +e.target.value,
+                                        })
+                                    }
                                 />
                             </Form.Group>
                             <Form.Group controlId="deadline">
@@ -144,28 +154,41 @@ const CreateSearch = () => {
                             <Form.Label>Минимальный стаж (лет)</Form.Label>
                             <Form.Control
                                 type="number"
-                                value={experience}
-                                onChange={(e) => setExperience(+e.target.value)}
+                                value={search.experience}
+                                onChange={(e) =>
+                                    setSearch({
+                                        ...search,
+                                        experience: +e.target.value,
+                                    })
+                                }
                             />
                         </Form.Group>
                         <Form.Group controlId="education">
                             <Form.Label>Уровень образования</Form.Label>
-                            {Object.values(educationDict).map((e) => (
+                            {props.educationTypes.map((e) => (
                                 <Form.Check
                                     type="checkbox"
                                     id={e.id}
                                     key={e.id}
                                     label={e.title}
-                                    checked={education?.includes(e.id)}
+                                    checked={search.education?.includes(e.id)}
                                     onChange={(event) => {
                                         if (event.target.checked) {
-                                            setEducation([...education, e.id]);
+                                            setSearch({
+                                                ...search,
+                                                education: [
+                                                    ...search.education,
+                                                    e.id,
+                                                ],
+                                            });
                                         } else {
-                                            setEducation(
-                                                education.filter(
-                                                    (id) => id !== e.id,
-                                                ),
-                                            );
+                                            setSearch({
+                                                ...search,
+                                                education:
+                                                    search.education.filter(
+                                                        (id) => id !== e.id,
+                                                    ),
+                                            });
                                         }
                                     }}
                                 />
@@ -173,25 +196,32 @@ const CreateSearch = () => {
                         </Form.Group>
                         <Form.Group controlId="specialities">
                             <Form.Label>Специализация</Form.Label>
-                            {Object.values(specialitiesDict).map((s) => (
+                            {props.specialities.map((s) => (
                                 <Form.Check
                                     type="checkbox"
                                     id={s.id}
                                     key={s.id}
                                     label={s.title}
-                                    checked={specialities.includes(s.id)}
+                                    checked={search.specialities?.includes(
+                                        s.id,
+                                    )}
                                     onChange={(event) => {
                                         if (event.target.checked) {
-                                            setSpecialities([
-                                                ...specialities,
-                                                s.id,
-                                            ]);
+                                            setSearch({
+                                                ...search,
+                                                specialities: [
+                                                    ...search.specialities,
+                                                    s.id,
+                                                ],
+                                            });
                                         } else {
-                                            setSpecialities(
-                                                specialities.filter(
-                                                    (id) => id !== s.id,
-                                                ),
-                                            );
+                                            setSearch({
+                                                ...search,
+                                                specialities:
+                                                    search.specialities.filter(
+                                                        (id) => id !== s.id,
+                                                    ),
+                                            });
                                         }
                                     }}
                                 />
@@ -220,24 +250,41 @@ const CreateSearch = () => {
                             </Button>
                         </Alert>
                     )}
-                    {error && <Alert variant="danger">{error}</Alert>}
+                    {mutResult.error && (
+                        <Alert variant="danger">
+                            {mutResult.error.message}
+                        </Alert>
+                    )}
                 </Col>
             </Row>
         </>
     );
 };
 
-export const CustomerNewSearch: React.FC = () => {
+const Content = () => {
+    const { loading, error, data } = useQuery(GET_EDUCATION_AND_SPECIALITIES);
+
+    if (loading) return <Loading />;
+    if (error) return <Alert variant="danger">Ошибка: {error.message}</Alert>;
+    return (
+        <Stack gap={2}>
+            <Row>
+                <h1>Новый поиск</h1>
+            </Row>
+            <Row>
+                <CreateSearch
+                    educationTypes={data.educationTypes}
+                    specialities={data.specialities}
+                />
+            </Row>
+        </Stack>
+    );
+};
+
+export const CustomerNewSearch = () => {
     return (
         <Container>
-            <Stack gap={2}>
-                <Row>
-                    <h1>Новый поиск</h1>
-                </Row>
-                <Row>
-                    <CreateSearch />
-                </Row>
-            </Stack>
+            <Content />
         </Container>
     );
 };
