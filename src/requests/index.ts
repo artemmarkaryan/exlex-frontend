@@ -173,3 +173,23 @@ export const GET_APPLICANTS = gql`
         }
     }
 `;
+
+export const GET_SEARCH_STATUS = gql`
+    query getSearchStatus($id: ID!) {
+        customerSearch(id: $id) {
+            status
+        }
+    }
+`;
+
+export const GET_ASSIGNEE = gql`
+    query searchAssignee($id: ID!) {
+        searchAssignee(searchID: $id) {
+            email
+            fullName
+            workExperience
+            educationTypeID
+            specialization
+        }
+    }
+`;

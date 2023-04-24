@@ -86,7 +86,7 @@ const SearchCard = (props: {
 
                 <Button
                     onClick={() => applyForSearch(s.id)}
-                    className="col-3 mt-3 mb-3"
+                    className="mt-3 mb-3"
                     variant="primary"
                     disabled={!!success}
                 >
