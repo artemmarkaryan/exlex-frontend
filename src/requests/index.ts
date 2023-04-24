@@ -70,6 +70,7 @@ export const GET_CUSTOMER_SEARCHES = gql`
             description
             price
             createdAt
+            status
             deadline {
                 year
                 month
@@ -142,6 +143,7 @@ export const GET_CUSTOMER_SEARCH = gql`
             description
             price
             createdAt
+            status
             deadline {
                 year
                 month

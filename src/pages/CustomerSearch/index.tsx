@@ -58,6 +58,11 @@ const SearchContent = (props: {
         );
     }, [data, props]);
 
+    const SearchStatusMapping = (key: string): string => {
+        const v = { new: 'Новый', assigned: 'Исполнитель найден' }[key];
+        return v ? v : key;
+    };
+
     if (loading) return <Loading />;
     if (error) return <Alert variant="danger">Ошибка: {error.message}</Alert>;
     if (search)
@@ -68,6 +73,9 @@ const SearchContent = (props: {
                 </h1>
                 <p>{search.description}</p>
                 <p>Вознаграждение: {search.price}р.</p>
+                <p>
+                    Статус: <Badge>{SearchStatusMapping(search.status)}</Badge>
+                </p>
                 <p>
                     Создан: {new Date(search.createdAt).toLocaleString('ru-RU')}
                 </p>
@@ -166,7 +174,7 @@ const Application = (props: {
                     </ul>
 
                     <Stack gap={2} className="col-4">
-                        <Button variant="success">Выбрать исполнителя</Button>
+                        <Button variant="success">Назначить</Button>
                         <Button variant="warning">Отказать</Button>
                     </Stack>
                 </Col>

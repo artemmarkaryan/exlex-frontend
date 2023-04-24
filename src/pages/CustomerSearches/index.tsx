@@ -4,7 +4,15 @@ import { Search } from '@/types/search';
 import { Speciality } from '@/types/speciality';
 import { useMutation, useQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { Alert, Button, Card, Col, Container, Row } from 'react-bootstrap';
+import {
+    Alert,
+    Badge,
+    Button,
+    Card,
+    Col,
+    Container,
+    Row,
+} from 'react-bootstrap';
 import { titles } from '@/util/titles';
 
 const SearchCard = (props: {
@@ -42,21 +50,27 @@ const SearchCard = (props: {
 
     const [hidden, setHidden] = useState(false);
 
+    const SearchStatusMapping = (key: string): string => {
+        const v = { new: 'Новый', assigned: 'Исполнитель найден' }[key];
+        return v ? v : key;
+    };
+
     return (
         <Col className="col-12 col-lg-6">
             <Card className="custom-card">
-                <h3 className="mb-4">
+                <h3 className="mb-2">
                     <a href={'/customer/search/' + s.id}>
                         {s.title ? s.title : 'Безымянный'}
                     </a>
                 </h3>
                 <p>{s.description}</p>
                 <p>Вознаграждение: {s.price}р.</p>
-                <p>Создан: {d.toLocaleString('ru-RU')}</p>
-
+                <p>Создан: {new Date(s.createdAt).toLocaleString('ru-RU')}</p>
+                <p>
+                    Статус: <Badge>{SearchStatusMapping(s.status)}</Badge>
+                </p>
                 <b className="mb-3">Требования</b>
                 <p>Опыт работы: {s.requirements.workExperience}</p>
-
                 <p className="mb-0">Образование:</p>
                 <ul>
                     {educationTitles.length > 0 ? educationTitles : 'Любое'}
@@ -65,7 +79,6 @@ const SearchCard = (props: {
                 <ul>
                     {specialityTitles.length > 0 ? specialityTitles : 'Любая'}
                 </ul>
-
                 <Button
                     onClick={() => deleteSearch({ variables: { id: s.id } })}
                     className="col-3 mt-3 mb-3"
@@ -74,7 +87,6 @@ const SearchCard = (props: {
                 >
                     Удалить
                 </Button>
-
                 {success && <Alert variant="success">{success}</Alert>}
                 {error && <Alert variant="danger">{error}</Alert>}
             </Card>
