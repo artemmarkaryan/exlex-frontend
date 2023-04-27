@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 specifiers:
   '@apollo/client': ^3.7.10
-  '@babel/core': ^7.21.4
   '@graphql-codegen/client-preset': ^3.0.0
   '@popperjs/core': ^2.11.6
   '@types/react': ^18.0.33
@@ -38,7 +37,6 @@ specifiers:
 
 dependencies:
   '@apollo/client': 3.7.10_gdcq4dv6opitr3wbfwyjmanyra
-  '@babel/core': 7.21.4
   '@popperjs/core': 2.11.6
   '@typescript-eslint/eslint-plugin': 5.54.1_4rfaf6mlw2mmutqjcopwvbftpu
   '@vitejs/plugin-react': 3.1.0_vite@4.1.4

@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build --emptyOutDir",
     "lint:eslint": "eslint",
     "lint:ts": "tsc --noEmit"
   },
@@ -20,6 +20,7 @@
     "url": "https://github.com/artemmarkaryan/exlex-frontend/issues"
   },
   "homepage": "https://github.com/artemmarkaryan/exlex-frontend#readme",
+  "packageManager": "pnpm@7.29.1",
   "devDependencies": {
     "@graphql-codegen/client-preset": "^3.0.0",
     "@types/react": "^18.0.33",

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React from 'react';
 import {
     BrowserRouter as Router,
     Route,
@@ -26,7 +26,7 @@ import { CustomerSearch } from '@/pages/CustomerSearch';
 import './styles.css';
 
 const httpLink = createHttpLink({
-    uri: 'http://0.0.0.0:8079/query',
+    uri: `${import.meta.env.VITE_SERVER_LOCATION}/query`,
 });
 
 const Routes = () => {

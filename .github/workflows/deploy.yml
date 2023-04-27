@@ -1,0 +1,25 @@
+on: 
+  push:
+    branches:
+      - main
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps: 
+      - name: checkout branch
+        uses: actions/checkout@v3
+      
+      - name: install node 
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: .nvmrc
+      
+      - name: init pnpm
+        uses: pnpm/action-setup@v2
+      
+      - name: install packages
+        run: pnpm install
+      
+      - name: test
+        run: npm run lint:ts
