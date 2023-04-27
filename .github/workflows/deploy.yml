@@ -21,5 +21,15 @@ jobs:
       - name: install packages
         run: pnpm install
       
-      - name: test
-        run: npm run lint:ts
+      - name: build static
+        run: npm run build
+
+      - name: deploy to vps
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          SOURCE: "./dist"
+          EXCLUDE: "/.github/, /.git/"
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}
+          TARGET: "/var/www/html"
