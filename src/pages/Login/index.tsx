@@ -8,11 +8,10 @@ import {
     Col,
     Alert,
 } from 'react-bootstrap';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { VerifyOTPForm } from '@/components/VerifyOTPForm';
 import { LOGIN_MUTATION } from '@/requests';
-
-const isDebug = true;
+import { isDebug } from '@/util/const';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');

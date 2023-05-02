@@ -9,11 +9,10 @@ import {
     Alert,
 } from 'react-bootstrap';
 import { UserTypes } from '@/types/auth';
-import { useMutation, gql } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { VerifyOTPForm } from '@/components/VerifyOTPForm';
 import { SIGNUP_MUTATION } from '@/requests';
-
-const isDebug = true;
+import { isDebug } from '@/util/const';
 
 const SignupForm = () => {
     const [email, setEmail] = useState('');
